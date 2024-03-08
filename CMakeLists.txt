@@ -10,12 +10,6 @@ include(${CMAKE_CURRENT_LIST_DIR}/cmake/botan.cmake)
 add_library(${LIB_NAME} STATIC
         include/walletpp.h
         src/walletpp.cpp
-        src/bip32.cpp
-        src/bip32.h
-        src/bip39.cpp
-        src/bip39.h
-        src/bip44.cpp
-        src/bip44.h
         src/entropy.cpp
         src/entropy.h
 )
