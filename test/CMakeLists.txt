@@ -11,6 +11,7 @@ FetchContent_MakeAvailable(Catch2)
 add_executable(walletpp_tests
         test.cpp
         entropy_test.cpp
+        bip39_tests.cpp
 )
 target_include_directories(walletpp_tests PUBLIC
         ${PROJECT_SOURCE_DIR}/include
