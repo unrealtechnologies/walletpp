@@ -16,8 +16,12 @@ class bip39 {
 public:
     [[nodiscard]] static std::vector<uint8_t>
     checksum_from_entropy(const std::vector<uint8_t> &entropy);
+    [[nodiscard]] static std::vector<uint16_t>
+    words_index_from_entropy(const std::vector<uint8_t> &entropy_with_checksum);
     [[nodiscard]] static std::vector<std::string>
     mnemonic_from_entropy(const std::vector<uint8_t> &entropy);
+    [[nodiscard]] static std::vector<std::string>
+    words_from_words_index(const std::vector<uint16_t> &words_index);
 };
 
 

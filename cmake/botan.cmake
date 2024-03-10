@@ -41,8 +41,6 @@ if (NOT ${lcName}_POPULATED)
             BUILD_ALWAYS true
     )
 
-    message(right here)
-
     add_library(Botan::botan STATIC IMPORTED GLOBAL
             ../include/walletpp.h
             ../src/walletpp.cpp)
