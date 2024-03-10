@@ -21,9 +21,9 @@ public:
     checksum_from_entropy(const Botan::secure_vector<uint8_t> &entropy);
     [[nodiscard]] static Botan::secure_vector<uint16_t>
     words_index_from_entropy(const Botan::secure_vector<uint8_t> &entropy_with_checksum);
-    [[nodiscard]] static std::vector<std::string>
+    [[nodiscard]] static std::vector<Botan::secure_vector<uint8_t>>
     mnemonic_from_entropy(const Botan::secure_vector<uint8_t> &entropy);
-    [[nodiscard]] static std::vector<std::string>
+    [[nodiscard]] static std::vector<Botan::secure_vector<uint8_t>>
     words_from_words_index(const Botan::secure_vector<uint16_t> &words_index);
 };
 

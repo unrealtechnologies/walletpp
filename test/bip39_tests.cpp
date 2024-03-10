@@ -8,7 +8,6 @@
 
 TEST_CASE("Bip39 seems fine", "[generateMnemonicFromEntropy]") {
     const auto random_entropy = entropy::generate_entropy(32);
-
-    // bip39::mnemonic_from_entropy(random_entropy);
+    bip39::mnemonic_from_entropy(random_entropy);
     REQUIRE(random_entropy.size() == 32);
 }

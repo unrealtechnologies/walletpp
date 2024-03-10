@@ -46,16 +46,22 @@ Botan::secure_vector<uint16_t> bip39::words_index_from_entropy(const Botan::secu
     return words_index;
 }
 
-std::vector<std::string> bip39::words_from_words_index(const Botan::secure_vector<uint16_t> &words_index) {
-    std::vector<std::string> words;
+std::vector<Botan::secure_vector<uint8_t>> bip39::words_from_words_index(const Botan::secure_vector<uint16_t> &words_index) {
+    std::vector<Botan::secure_vector<uint8_t>> words;
     words.reserve(words_index.size());
     for (const auto word_index: words_index) {
-        words.emplace_back(english_word_list[word_index]);
+        Botan::secure_vector<uint8_t> secure_vector;
+
+        for (std::string_view word = english_word_list[word_index]; auto character: word) {
+            secure_vector.emplace_back(character);
+        }
+
+        words.emplace_back(secure_vector);
     }
     return words;
 }
 
-std::vector<std::string> bip39::mnemonic_from_entropy(const Botan::secure_vector<uint8_t> &entropy) {
+std::vector<Botan::secure_vector<uint8_t>> bip39::mnemonic_from_entropy(const Botan::secure_vector<uint8_t> &entropy) {
     if (entropy.size() < entropy_min_length_in_bytes ||
         entropy.size() > entropy_max_length_in_bytes ||
         entropy.size() % sizeof(uint8_t) != 0) {
