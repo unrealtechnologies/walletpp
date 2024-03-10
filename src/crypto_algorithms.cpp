@@ -20,7 +20,7 @@ std::array<uint8_t, crypto_algorithms::sha256_output_byte_size> crypto_algorithm
     return arrayData;
 }
 
-std::string crypto_algorithms::to_hex(const Botan::secure_vector<uint8_t> &contents) {
+std::string crypto_algorithms::to_hex(const std::span<uint8_t> &contents) {
     return Botan::hex_encode(contents);
 }
 

@@ -32,7 +32,7 @@ public:
     mnemonic_from_entropy(const Botan::secure_vector<uint8_t> &entropy);
 
     [[nodiscard]] static std::array<uint8_t, crypto_algorithms::pbkdf2_sha512_output_byte_size>
-    seed_from_mnemonic(const std::vector<Botan::secure_vector<uint8_t>> &words_vector);
+    seed_from_mnemonic(const std::vector<std::string_view> &words_vector);
 };
 
 
