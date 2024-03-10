@@ -13,17 +13,17 @@ std::vector<uint8_t> bip39::checksum_from_entropy(const std::vector<uint8_t> &en
 }
 
 std::vector<uint16_t> bip39::words_index_from_entropy(const std::vector<uint8_t> &entropy_with_checksum) {
+    // we can use a bool to represent bits (0s and 1s) true is 1, false is 0
     std::vector<bool> bits;
     for (const auto byte: entropy_with_checksum) {
         std::bitset<8> bitSet(byte);
         for (int i = 7; i >= 0; --i) {// Start from the most significant bit
-            bits.push_back(bitSet.test(i) ? 1 : 0);
+            bits.push_back(bitSet.test(i) ? true : false);
         }
     }
 
     // Vector of vectors to hold the split vectors
     std::vector<std::vector<uint8_t>> vector_of_word_bits;
-
     for (size_t i = 0; i < bits.size(); i += entropy_bits_per_word) {
         // Calculate the range for the current sub-vector
         const auto start_it = std::next(bits.begin(), i);
@@ -35,13 +35,13 @@ std::vector<uint16_t> bip39::words_index_from_entropy(const std::vector<uint8_t>
     }
 
     std::vector<uint16_t> words_index;
-    for (auto bits: vector_of_word_bits) {
+    for (auto word_bits: vector_of_word_bits) {
         std::bitset<entropy_bits_per_word> bitset;
         // Copy the bits from the vector to the bitset
-        for (size_t i = 0; i < bits.size(); ++i) {
-            bitset[i] = bits[bits.size() - i - 1];// Reverse order to match LSB to MSB convention
+        for (size_t i = 0; i < word_bits.size(); ++i) {
+            bitset[i] = word_bits[word_bits.size() - i - 1];// Reverse order to match LSB to MSB convention
         }
-        words_index.emplace_back(bitset.to_ulong());
+        words_index.emplace_back(static_cast<uint16_t>(bitset.to_ulong()));
     }
 
     return words_index;
@@ -49,6 +49,7 @@ std::vector<uint16_t> bip39::words_index_from_entropy(const std::vector<uint8_t>
 
 std::vector<std::string> bip39::words_from_words_index(const std::vector<uint16_t> &words_index) {
     std::vector<std::string> words;
+    words.reserve(words_index.size());
     for (const auto word_index: words_index) {
         words.emplace_back(english_word_list[word_index]);
     }
@@ -61,6 +62,7 @@ std::vector<std::string> bip39::mnemonic_from_entropy(const std::vector<uint8_t>
         entropy.size() % sizeof(uint8_t) != 0) {
         throw std::runtime_error("Key size should be between 128 and 256 bits AKA 16 and 32 bytes");
     }
+
     const auto checksum = checksum_from_entropy(entropy);
 
     // combine the initial entropy with the checksum
@@ -69,6 +71,6 @@ std::vector<std::string> bip39::mnemonic_from_entropy(const std::vector<uint8_t>
     entropy_with_checksum.insert(entropy_with_checksum.end(), entropy.begin(), entropy.end());
     entropy_with_checksum.insert(entropy_with_checksum.end(), checksum.begin(), checksum.end());
 
-    auto words_index = words_index_from_entropy(entropy_with_checksum);
+    const auto words_index = words_index_from_entropy(entropy_with_checksum);
     return words_from_words_index(words_index);
 }
