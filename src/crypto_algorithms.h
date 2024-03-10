@@ -19,6 +19,8 @@ struct crypto_algorithms {
     [[nodiscard]] static std::string to_hex(const Botan::secure_vector<uint8_t> &contents);
     [[nodiscard]] static Botan::secure_vector<uint8_t> from_hex(const std::string &hex_string);
     [[nodiscard]] static std::array<uint8_t, pbkdf2_sha512_output_byte_size> pbkdf2(const Botan::secure_vector<uint8_t> &password, const Botan::secure_vector<uint8_t> &salt);
+    [[nodiscard]] static std::array<uint8_t, pbkdf2_sha512_output_byte_size> pbkdf2(std::string_view password, std::string_view salt);
+    [[nodiscard]] static Botan::secure_vector<bool> binary_from_bytes(const Botan::secure_vector<uint8_t> &bytes, const std::optional<size_t> &num_of_bits);
 
     template<std::size_t SIZE>
     static void secure_erase_array(std::array<uint8_t, SIZE> &arr) {
@@ -27,6 +29,12 @@ struct crypto_algorithms {
 
     static void secure_erase_vector(std::vector<uint8_t> &vec) {
         std::ranges::fill(vec, 0);
+    }
+
+    static void secure_erase_string(std::string &str) {
+        std::ranges::fill(str, 0);
+        str.clear();
+        str.shrink_to_fit();
     }
 };
 
