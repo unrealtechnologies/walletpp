@@ -36,7 +36,7 @@ std::vector<uint16_t> bip39::words_index_from_entropy(const std::vector<uint8_t>
 
     std::vector<uint16_t> words_index;
     for (auto bits: vector_of_word_bits) {
-        std::bitset<11> bitset;
+        std::bitset<entropy_bits_per_word> bitset;
         // Copy the bits from the vector to the bitset
         for (size_t i = 0; i < bits.size(); ++i) {
             bitset[i] = bits[bits.size() - i - 1];// Reverse order to match LSB to MSB convention
@@ -56,8 +56,14 @@ std::vector<std::string> bip39::words_from_words_index(const std::vector<uint16_
 }
 
 std::vector<std::string> bip39::mnemonic_from_entropy(const std::vector<uint8_t> &entropy) {
+    if (entropy.size() < entropy_min_length_in_bytes ||
+        entropy.size() > entropy_max_length_in_bytes ||
+        entropy.size() % sizeof(uint8_t) != 0) {
+        throw std::runtime_error("Key size should be between 128 and 256 bits AKA 16 and 32 bytes");
+    }
     const auto checksum = checksum_from_entropy(entropy);
 
+    // combine the initial entropy with the checksum
     std::vector<uint8_t> entropy_with_checksum;
     entropy_with_checksum.reserve(entropy.size() + checksum.size());
     entropy_with_checksum.insert(entropy_with_checksum.end(), entropy.begin(), entropy.end());
