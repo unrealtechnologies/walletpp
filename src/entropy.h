@@ -11,7 +11,7 @@
 class entropy {
 
 public:
-    [[nodiscard]] static std::vector<uint8_t> generate_entropy(uint32_t byte_size);
+    [[nodiscard]] static Botan::secure_vector<uint8_t> generate_entropy(uint32_t byte_size);
 };
 
 
