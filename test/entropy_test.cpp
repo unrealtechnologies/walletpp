@@ -1,8 +1,11 @@
 //
 // Created by ariel on 3/8/24.
 //
-#include <catch2/catch_test_macros.hpp>
+#include "bip39.h"
+
+
 #include "entropy.h"
+#include <catch2/catch_test_macros.hpp>
 
 TEST_CASE("Entropy generates correctly", "[generateEntropy]") {
     const auto random_entropy = entropy::generate_entropy(256);

@@ -12,6 +12,11 @@ add_library(${LIB_NAME} STATIC
         src/walletpp.cpp
         src/entropy.cpp
         src/entropy.h
+        src/bip39.cpp
+        src/bip39.h
+        src/crypto_algorithms.cpp
+        src/crypto_algorithms.h
+        src/wordlist.h
 )
 
 target_include_directories(${LIB_NAME}
