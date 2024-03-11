@@ -44,6 +44,7 @@ std::array<uint8_t, crypto_algorithms::pbkdf2_sha512_output_byte_size> crypto_al
 
     return key;
 }
+
 std::array<uint8_t, crypto_algorithms::pbkdf2_sha512_output_byte_size> crypto_algorithms::pbkdf2(const std::string_view password, const std::string_view salt) {
     const auto pwd_fam = Botan::PasswordHashFamily::create_or_throw(pbkdf2_algorithm);
     const auto pwd_hash = pwd_fam->from_iterations(pbkdf2_iterations);
@@ -54,18 +55,18 @@ std::array<uint8_t, crypto_algorithms::pbkdf2_sha512_output_byte_size> crypto_al
 
     return key;
 }
+
 Botan::secure_vector<bool> crypto_algorithms::binary_from_bytes(const Botan::secure_vector<uint8_t> &bytes, const std::optional<size_t> &num_of_bits) {
-    // we can use a bool to represent bits (0s and 1s) true is 1, false is 0
     Botan::secure_vector<bool> bits;
-    for (const auto byte: bytes) {
-        std::bitset<8> bitSet(byte);
-        for (int i = 7; i >= 0; --i) {// Start from the most significant bit
-            bits.push_back(bitSet.test(i) ? true : false);
+    size_t bits_to_process = num_of_bits.value_or(bytes.size() * 8);
+
+    for (size_t byte_index = 0; byte_index < bytes.size() && bits.size() < bits_to_process; ++byte_index) {
+        for (int bit_index = 7; bit_index >= 0 && bits.size() < bits_to_process; --bit_index) {
+            // Extract each bit using bitwise AND and shift operations
+            bool bit = (bytes[byte_index] & (1 << bit_index)) != 0;
+            bits.push_back(bit);
         }
     }
 
-    if (num_of_bits) {
-        return {bits.begin(), bits.begin() + num_of_bits.value()};
-    }
     return bits;
 }

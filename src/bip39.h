@@ -6,9 +6,9 @@
 #define BIP39_H
 
 #include "crypto_algorithms.h"
-#include <vector>
 #include <climits>
 #include <string_view>
+#include <vector>
 
 class bip39 {
     constexpr static uint8_t entropy_bits_multiple = 32;
