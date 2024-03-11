@@ -39,7 +39,6 @@ std::array<uint8_t, crypto_algorithms::pbkdf2_sha512_output_byte_size> crypto_al
     auto pwd_fam = Botan::PasswordHashFamily::create_or_throw(pbkdf2_algorithm);
     auto pwd_hash = pwd_fam->from_iterations(pbkdf2_iterations);
 
-    // std::array<uint8_t, 32> salt;
     std::array<uint8_t, pbkdf2_sha512_output_byte_size> key{};
     pwd_hash->derive_key(key.data(), key.size(), reinterpret_cast<const char *>(password.data()), password.size(), salt_vector.data(), salt_vector.size());
 
@@ -50,10 +49,8 @@ std::array<uint8_t, crypto_algorithms::pbkdf2_sha512_output_byte_size> crypto_al
     const auto pwd_hash = pwd_fam->from_iterations(pbkdf2_iterations);
     const Botan::secure_vector<uint8_t> salt_vector(salt.begin(), salt.end());
 
-    // std::array<uint8_t, 32> salt;
     std::array<uint8_t, pbkdf2_sha512_output_byte_size> key{};
     pwd_hash->hash(key, password, salt_vector);
-    pwd_hash->derive_key(key.data(), key.size(), reinterpret_cast<const char *>(password.data()), password.size(), salt_vector.data(), salt_vector.size());
 
     return key;
 }
