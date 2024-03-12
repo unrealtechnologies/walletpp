@@ -5,7 +5,8 @@
 #ifndef WORDLIST_H
 #define WORDLIST_H
 
-const std::string english_word_list[2048] = {
+// the words get allocated on the read-only section of memory
+constexpr std::string_view english_word_list[2048] = {
         "abandon",
         "ability",
         "able",

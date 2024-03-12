@@ -20,6 +20,11 @@ add_library(${LIB_NAME} STATIC
         src/extended_key.h
         src/hd_derivation.cpp
         src/hd_derivation.h
+        src/secp256k1_context_singleton.h
+        src/secp256k1_context_singleton.cpp
+        src/bip32.cpp
+        src/bip32.h
+        src/constants.h
 )
 
 target_include_directories(${LIB_NAME}
