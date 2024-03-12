@@ -17,6 +17,9 @@ add_library(${LIB_NAME} STATIC
         src/crypto_algorithms.cpp
         src/crypto_algorithms.h
         src/wordlist.h
+        src/extended_key.h
+        src/hd_derivation.cpp
+        src/hd_derivation.h
 )
 
 target_include_directories(${LIB_NAME}

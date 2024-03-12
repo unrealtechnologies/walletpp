@@ -3,9 +3,14 @@
 //
 
 #include "crypto_algorithms.h"
+#include "secp256k1.h"
 #include <botan/auto_rng.h>
+#include <botan/base58.h>
 #include <botan/hex.h>
+#include <botan/keccak.h>
+#include <botan/mac.h>
 #include <botan/pwdhash.h>
+#include <botan/rmd160.h>
 
 
 std::array<uint8_t, crypto_algorithms::sha256_output_byte_size> crypto_algorithms::sha256(const Botan::secure_vector<uint8_t> &contents) {
@@ -14,7 +19,7 @@ std::array<uint8_t, crypto_algorithms::sha256_output_byte_size> crypto_algorithm
     Botan::secure_vector<uint8_t> secure_msg = hash1->final();
 
     // Initialize std::array and copy the std::vector
-    std::array<uint8_t, crypto_algorithms::sha256_output_byte_size> arrayData{};
+    std::array<uint8_t, sha256_output_byte_size> arrayData{};
     std::ranges::copy(secure_msg, arrayData.begin());
 
     return arrayData;
@@ -69,4 +74,14 @@ Botan::secure_vector<bool> crypto_algorithms::binary_from_bytes(const Botan::sec
     }
 
     return bits;
+}
+
+Botan::secure_vector<uint8_t> crypto_algorithms::hmac512(const Botan::secure_vector<uint8_t> &msg, const Botan::secure_vector<uint8_t> &key) {
+    auto hmac = Botan::MessageAuthenticationCode::create_or_throw("HMAC(SHA-512)");
+}
+
+Botan::secure_vector<uint8_t> crypto_algorithms::generate_private_key(const Botan::secure_vector<uint8_t> &key, const Botan::secure_vector<uint8_t> &tweak) {
+}
+
+Botan::secure_vector<uint8_t> crypto_algorithms::generate_public_key(const Botan::secure_vector<uint8_t> &key, bool compressed) {
 }
