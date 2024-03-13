@@ -7,6 +7,7 @@
 
 #include "crypto_algorithms.h"
 #include "extended_key.h"
+#include "constants.h"
 
 namespace walletpp {
     class master_key_generator {
