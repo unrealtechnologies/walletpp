@@ -10,10 +10,6 @@
 #include <cstddef>
 
 class bip32 {
-public:
-    constexpr static size_t bytes_x32 = 256;
-    constexpr static size_t bytes_x64 = 512;
-    [[nodiscard]] static std::unique_ptr<extended_key> generate_master_key(const Botan::secure_vector<uint8_t>& seed);
 };
 
 

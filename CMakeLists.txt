@@ -25,6 +25,8 @@ add_library(${LIB_NAME} STATIC
         src/bip32.cpp
         src/bip32.h
         src/constants.h
+        src/master_key_generator.cpp
+        src/master_key_generator.h
 )
 
 target_include_directories(${LIB_NAME}
