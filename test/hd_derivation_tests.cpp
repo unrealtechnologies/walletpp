@@ -15,8 +15,8 @@ SCENARIO("Deriving first and secon level child keys from a master private key", 
 
         auto keys_pair = hd_derivation::private_and_public_key_pair_derivation(*master_extended_key, 0);
         WHEN("We derive the first level child private and public keys from the master key") {
-            auto private_key = keys_pair.first;
-            auto public_key = keys_pair.second;
+            auto private_key = keys_pair.private_key;
+            auto public_key = keys_pair.public_key;
             auto base58_private_key_string = private_key.to_base58_string();
             auto base58_public_key_string = public_key.to_base58_string();
 
@@ -27,9 +27,9 @@ SCENARIO("Deriving first and secon level child keys from a master private key", 
         }
 
         AND_WHEN("We derive second level keys from the first level derived private key") {
-            auto second_level_keys_pair = hd_derivation::private_and_public_key_pair_derivation(keys_pair.first, 0);
-            auto second_level_private_key = second_level_keys_pair.first;
-            auto second_level_public_key = second_level_keys_pair.second;
+            auto second_level_keys_pair = hd_derivation::private_and_public_key_pair_derivation(keys_pair.private_key, 0);
+            auto second_level_private_key = second_level_keys_pair.private_key;
+            auto second_level_public_key = second_level_keys_pair.public_key;
             const auto base58_second_level_private_key = second_level_private_key.to_base58_string();
             const auto base58_second_level_public_key = second_level_public_key.to_base58_string();
 

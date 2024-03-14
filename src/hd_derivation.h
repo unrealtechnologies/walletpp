@@ -6,6 +6,8 @@
 #define HD_DERIVATION_H
 
 #include "extended_key.h"
+#include "key_pair.h"
+
 #include <array>
 
 
@@ -77,7 +79,7 @@ public:
         return extended_public_key;
     }
 
-    static std::pair<extended_key, extended_key> private_and_public_key_pair_derivation(const extended_key &parent_key, const size_t index) {
+    static key_pair private_and_public_key_pair_derivation(const extended_key &parent_key, const size_t index) {
         if (parent_key.key.size() != walletpp::private_key_bytes_length) {
             throw std::runtime_error("The private key should be 256 bits, are you attempting to generate the pair with a public key?");
         }
@@ -90,7 +92,7 @@ public:
                 extended_private_key.depth,
                 extended_private_key.index);
 
-        return std::make_pair(extended_private_key, extended_public_key);
+        return {extended_private_key, extended_public_key};
     }
 };
 
