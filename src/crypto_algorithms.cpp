@@ -42,6 +42,13 @@ std::array<uint8_t, crypto_algorithms::sha256_output_byte_size> crypto_algorithm
     return arrayData;
 }
 
+Botan::secure_vector<uint8_t> crypto_algorithms::ripemd160(const Botan::secure_vector<uint8_t> &contents) {
+    const auto hash = Botan::HashFunction::create_or_throw("RIPEMD-160");
+    hash->update(contents);
+
+    return hash->final();
+}
+
 std::string crypto_algorithms::to_hex(const std::span<uint8_t> &contents) {
     return Botan::hex_encode(contents);
 }

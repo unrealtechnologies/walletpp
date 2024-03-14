@@ -24,7 +24,5 @@ std::unique_ptr<extended_key> walletpp::master_key_generator::generate_public_ke
             master_private_extended_key.parent_finger_print,
             master_private_extended_key.depth, master_private_extended_key.index);
 
-    extended_master_public_key->serialize();
-
     return extended_master_public_key;
 }
