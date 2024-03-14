@@ -29,6 +29,10 @@ add_library(${LIB_NAME} STATIC
         src/master_key_generator.h
         src/key_pair.cpp
         src/key_pair.h
+        src/hd_trie.cpp
+        src/hd_trie.h
+        src/hd_node.cpp
+        src/hd_node.h
 )
 
 target_include_directories(${LIB_NAME}

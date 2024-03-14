@@ -17,5 +17,4 @@ struct key_pair {
 };
 
 
-
-#endif //KEY_PAIR_H
+#endif//KEY_PAIR_H
