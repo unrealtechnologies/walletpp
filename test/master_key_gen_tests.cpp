@@ -12,7 +12,7 @@ SCENARIO("We generate the private and public master keys", "[master-key-gen]") {
     const std::string expected_bae58_public_key_string = "xpub661MyMwAqRbcFkPHucMnrGNzDwb6teAX1RbKQmqtEF8kK3Z7LZ59qafCjB9eCRLiTVG3uxBxgKvRgbubRhqSKXnGGb1aoaqLrpMBDrVxga8";
     const auto seed = crypto_algorithms::from_hex(seed_hex_string);
     const auto master_extended_key = walletpp::master_key_generator::generate_private_key(seed);
-    const auto base58_key = master_extended_key->to_base58();
+    const auto base58_key = master_extended_key->to_base58_string();
     const std::string generated_base58_string(base58_key.begin(), base58_key.end());
 
     GIVEN("We have the private key") {
@@ -23,7 +23,7 @@ SCENARIO("We generate the private and public master keys", "[master-key-gen]") {
 
         WHEN("We generate the public key from the private extended key") {
             const auto master_extended_public_key = walletpp::master_key_generator::generate_public_key(*master_extended_key);
-            const auto base58_public_key = master_extended_public_key->to_base58();
+            const auto base58_public_key = master_extended_public_key->to_base58_string();
             const std::string generated_base58_public_key_string(base58_public_key.begin(), base58_public_key.end());
 
             THEN("We validate the public key is correct") {

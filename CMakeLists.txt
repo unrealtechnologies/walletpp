@@ -27,6 +27,8 @@ add_library(${LIB_NAME} STATIC
         src/constants.h
         src/master_key_generator.cpp
         src/master_key_generator.h
+        src/key_pair.cpp
+        src/key_pair.h
 )
 
 target_include_directories(${LIB_NAME}

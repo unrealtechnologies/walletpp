@@ -13,10 +13,17 @@
 
 
 struct extended_key {
+    bool is_private_key = true;
+    Botan::secure_vector<uint8_t> key;
+    Botan::secure_vector<uint8_t> chain_code;
+    std::optional<Botan::secure_vector<uint8_t>> parent_finger_print;
+    uint8_t depth;
+    uint32_t index;
+
     extended_key(
             const Botan::secure_vector<uint8_t> &key,
             const Botan::secure_vector<uint8_t> &chain_code,
-            const Botan::secure_vector<uint8_t> &parent_finger_print,
+            const std::optional<Botan::secure_vector<uint8_t>> &parent_finger_print,
             const uint8_t depth,
             const uint64_t index) {
         this->key = key;
@@ -25,12 +32,6 @@ struct extended_key {
         this->depth = depth;
         this->index = index;
     }
-    bool is_private_key = true;
-    Botan::secure_vector<uint8_t> key;
-    Botan::secure_vector<uint8_t> chain_code;
-    Botan::secure_vector<uint8_t> parent_finger_print;
-    uint8_t depth;
-    uint32_t index;
 
     Botan::secure_vector<uint8_t> serialize() {
         Botan::secure_vector<uint8_t> serialized_key;
@@ -41,7 +42,11 @@ struct extended_key {
         auto active_version = (key.size() == walletpp::private_key_bytes_length) ? private_version : public_version;
         serialized_key.insert(serialized_key.end(), active_version.begin(), active_version.end());
         serialized_key.insert(serialized_key.end(), depth);
-        serialized_key.insert(serialized_key.end(), parent_finger_print.begin(), parent_finger_print.end());
+        if (parent_finger_print.has_value()) {
+            serialized_key.insert(serialized_key.end(), parent_finger_print.value().begin(), parent_finger_print.value().end());
+        } else {
+            serialized_key.insert(serialized_key.end(), walletpp::master_key_parent_key.begin(), walletpp::master_key_parent_key.end());
+        }
         auto index_be_format = crypto_algorithms::uint32_to_big_endian_bytes(index);
         serialized_key.insert(serialized_key.end(), index_be_format.begin(), index_be_format.end());
         serialized_key.insert(serialized_key.end(), chain_code.begin(), chain_code.end());
@@ -55,9 +60,14 @@ struct extended_key {
         return serialized_key;
     }
 
-    Botan::secure_vector<uint8_t> to_base58() {
+    std::string to_base58_string() {
         auto serialized_buff = serialize();
         auto base58_string = Botan::base58_encode(serialized_buff);
+        return base58_string;
+    }
+
+    Botan::secure_vector<uint8_t> to_base58_vector() {
+        auto base58_string = to_base58_string();
         Botan::secure_vector<uint8_t> base58_vec{base58_string.begin(), base58_string.end()};
         crypto_algorithms::secure_erase_string(base58_string);
         return base58_vec;

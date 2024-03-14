@@ -11,7 +11,7 @@ std::unique_ptr<extended_key> walletpp::master_key_generator::generate_private_k
 
     Botan::secure_vector<uint8_t> m_key = {hash_output.begin(), hash_output.begin() + private_key_bytes_length};
     Botan::secure_vector<uint8_t> m_chaincode = {hash_output.begin() + chaincode_byte_lenth, hash_output.end()};
-    Botan::secure_vector<uint8_t> parent_finger_print = {zero_byte, zero_byte, zero_byte, zero_byte};
+    std::optional<Botan::secure_vector<uint8_t>> parent_finger_print = std::nullopt;
     auto extended_master_key = std::make_unique<extended_key>(m_key, m_chaincode, parent_finger_print, zero_byte, zero_byte);
 
     return extended_master_key;
