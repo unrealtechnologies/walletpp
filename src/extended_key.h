@@ -39,11 +39,11 @@ struct extended_key {
         constexpr std::array<uint8_t, walletpp::extended_key_version_byte_length> private_version = {0x04, 0x88, 0xAD, 0xE4};
         constexpr std::array<uint8_t, walletpp::extended_key_version_byte_length> public_version = {0x04, 0x88, 0xB2, 0x1E};
         auto active_version = (key.size() == walletpp::private_key_bytes_length) ? private_version : public_version;
-        serialized_key.insert(serialized_key.end(), active_version.begin(), active_version.end());          // 4
-        serialized_key.insert(serialized_key.end(), depth);                                                 // 5
-        serialized_key.insert(serialized_key.end(), parent_finger_print.begin(), parent_finger_print.end());// 9
+        serialized_key.insert(serialized_key.end(), active_version.begin(), active_version.end());
+        serialized_key.insert(serialized_key.end(), depth);
+        serialized_key.insert(serialized_key.end(), parent_finger_print.begin(), parent_finger_print.end());
         auto index_be_format = crypto_algorithms::uint32_to_big_endian_bytes(index);
-        serialized_key.insert(serialized_key.end(), index_be_format.begin(), index_be_format.end());// 13
+        serialized_key.insert(serialized_key.end(), index_be_format.begin(), index_be_format.end());
         serialized_key.insert(serialized_key.end(), chain_code.begin(), chain_code.end());
         if (key.size() == walletpp::private_key_bytes_length) {
             serialized_key.emplace_back(walletpp::zero_byte);
@@ -63,7 +63,7 @@ struct extended_key {
         return base58_vec;
     }
 
-    [[nodiscard]] static Botan::secure_vector<uint8_t> fingerprint(const Botan::secure_vector<uint8_t> &key)  {
+    [[nodiscard]] static Botan::secure_vector<uint8_t> fingerprint(const Botan::secure_vector<uint8_t> &key) {
         auto firstSha256 = crypto_algorithms::sha256(key);
         auto full_fingerprint = crypto_algorithms::ripemd160({firstSha256.begin(), firstSha256.end()});
         return {full_fingerprint.begin(), full_fingerprint.begin() + walletpp::fingerprint_byte_length};
