@@ -4,6 +4,8 @@
 
 #include "hd_trie.h"
 
+#include <iostream>
+
 void hd_trie::initialize_with_seed(const Botan::secure_vector<uint8_t> &seed) {
     const auto kp = walletpp::master_key_generator::generate_master_key_pair(seed);
     root = std::make_unique<hd_node>(*kp);
