@@ -15,6 +15,7 @@ add_executable(walletpp_tests
         bip32_tests.cpp
         master_key_gen_tests.cpp
         hd_derivation_tests.cpp
+        hd_trie_tests.cpp
 )
 target_include_directories(walletpp_tests PUBLIC
         ${PROJECT_SOURCE_DIR}/include

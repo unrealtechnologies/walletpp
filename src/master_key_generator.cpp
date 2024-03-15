@@ -26,3 +26,12 @@ std::unique_ptr<extended_key> walletpp::master_key_generator::generate_public_ke
 
     return extended_master_public_key;
 }
+
+std::unique_ptr<key_pair> walletpp::master_key_generator::generate_master_key_pair(const Botan::secure_vector<uint8_t> &seed) {
+    auto private_key = generate_private_key(seed);
+    auto public_key = generate_public_key(*private_key);
+    // auto kp = std::make_unique<key_pair>(*private_key, *public_key);
+    auto kp = std::make_unique<key_pair>(std::move(*private_key), std::move(*public_key));
+
+    return kp;
+}

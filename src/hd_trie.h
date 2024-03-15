@@ -4,15 +4,12 @@
 
 #ifndef HD_TRIE_H
 #define HD_TRIE_H
+#include "hd_derivation.h"
 #include "hd_node.h"
+#include "master_key_generator.h"
 
 #include <algorithm>
-#include <iomanip>
-#include <iostream>
-#include <ranges>
-#include <string_view>
-
-#include <iomanip>
+#include <botan/allocator.h>
 #include <iostream>
 #include <list>
 #include <ranges>
@@ -23,63 +20,63 @@
 class hd_trie {
     std::unique_ptr<hd_node> root = nullptr;
 
+    void initialize_with_seed(const Botan::secure_vector<uint8_t>& seed) {
+        auto kp = walletpp::master_key_generator::generate_master_key_pair(seed);
+        root = std::make_unique<hd_node>(*kp);
+    }
+
 public:
-    explicit hd_trie(const key_pair &k_pair) {
-        if (root == nullptr) {
-            root = std::make_unique<hd_node>(
-                    "m",
-                    k_pair,
-                    nullptr);
+    explicit hd_trie(const key_pair& k_pair) : root(std::make_unique<hd_node>(k_pair)) {}
+
+    explicit hd_trie(const Botan::secure_vector<uint8_t> &seed) {
+        initialize_with_seed(seed);
+    }
+
+    key_pair search(std::string_view path) {
+        auto path_list = get_path_list_from_string(path);
+        if (path_list.front() == "m") {
+            path_list.pop_front();
+        } else {
+            throw std::runtime_error("Invalid path");
         }
-    };
-
-    void insert(std::string_view path) {
-
+        return internal_search_helper(path_list, root.get(), 0);
     }
 
-    void search(std::string_view path) {
-        const auto path_vec = get_path_vector_from_string(path);
-    }
-
-    hd_node * internal_search_helper(std::pmr::list<std::string>& path_list, hd_node *curr_node, size_t depth) {
+    key_pair internal_search_helper(std::list<std::string> &path_list, hd_node *curr_node, size_t depth) {
         if (path_list.empty()) {
-            throw std::runtime_error("Incorrect path");
+            return curr_node->k_pair;
         }
 
-        std::string curr_path = path_list.front()->str;
+        const auto curr_path = path_list.front();
         path_list.pop_front();
 
-        if (curr_path == "m" && path_list.size() == 0 && depth == 0) {
-            return curr_node;
-        }
-
-
         size_t index;
-
         try {
-            if (const auto i = curr_path.find('\''); i == -1) { //not hardered
+            if (const auto i = curr_path.find('\''); i == -1) {//not hardered
                 index = std::stoull(curr_path);
             } else {
-                index = std::stoull(curr_path.substr(0, curr_path.length() -1));
+                index = std::stoull(curr_path.substr(0, curr_path.length() - 1));
             }
-        } catch(const std::invalid_argument &ia) {
+        } catch (const std::invalid_argument &ia) {
             std::cerr << "Invalid argument: " << ia.what() << std::endl;
-        } catch (const std::out_of_range& oor) {
+            throw std::runtime_error("Invalid argument error");
+        } catch (const std::out_of_range &oor) {
             std::cerr << "Out of range: " << oor.what() << std::endl;
+            throw std::runtime_error("Out of range error");
         }
 
-        auto children = curr_node->children;
-
+        auto next_node = curr_node->insert_child(index);
+        return internal_search_helper(path_list, next_node, 0);
     }
 
-    static std::vector<std::string_view> get_path_vector_from_string(std::string_view path) {
+    static std::list<std::string> get_path_list_from_string(std::string_view path) {
         const std::string delim = "/";
-        std::vector<std::string_view> path_vector;
-        for (auto&& word_range : std::views::split(path, delim)) {
-            std::string_view word{word_range.begin(), static_cast<std::size_t>(std::ranges::distance(word_range))};
-            path_vector.emplace_back(word);
+        std::list<std::string> path_list;
+        for (auto &&word_range: std::views::split(path, delim)) {
+            std::string word{word_range.begin(), static_cast<std::size_t>(std::ranges::distance(word_range))};
+            path_list.emplace_back(word);
         }
-        return path_vector;
+        return path_list;
     }
 };
 
