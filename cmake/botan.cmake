@@ -19,10 +19,10 @@ if (NOT ${lcName}_POPULATED)
 
     include(ExternalProject)
     set(botan_args
-#            --minimized-build
-#            --enable-modules=hash,bcrypt,scrypt,hex,system_rng,sha2_32,sha2_64,sha3,argon2,rmd160,base58,keccak,tss,system_rng,auto_rng,pubkey
-            #--disable-shared
-#            --enable-shared
+            --minimized-build
+            --enable-modules=hash,bcrypt,scrypt,hex,system_rng,sha2_32,sha2_64,sha3,argon2,rmd160,base58,keccak,tss,system_rng,auto_rng,pubkey,hmac,keccak,rmd160
+#            --disable-shared
+            --enable-shared
             --cc=gcc
             --prefix=${CMAKE_CURRENT_BINARY_DIR}/botan
     )

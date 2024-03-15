@@ -17,6 +17,22 @@ add_library(${LIB_NAME} STATIC
         src/crypto_algorithms.cpp
         src/crypto_algorithms.h
         src/wordlist.h
+        src/extended_key.h
+        src/hd_derivation.cpp
+        src/hd_derivation.h
+        src/secp256k1_context_singleton.h
+        src/secp256k1_context_singleton.cpp
+        src/bip32.cpp
+        src/bip32.h
+        src/constants.h
+        src/master_key_generator.cpp
+        src/master_key_generator.h
+        src/key_pair.cpp
+        src/key_pair.h
+        src/hd_trie.cpp
+        src/hd_trie.h
+        src/hd_node.cpp
+        src/hd_node.h
 )
 
 target_include_directories(${LIB_NAME}
