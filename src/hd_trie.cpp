@@ -16,6 +16,10 @@ hd_trie::hd_trie(const Botan::secure_vector<uint8_t> &seed) {
 }
 
 key_pair hd_trie::search(std::string_view path) {
+    if (path.empty()) {
+        throw std::invalid_argument("Path cannot be empty");
+    }
+
     auto path_list = get_path_list_from_string(path);
     if (path_list.front() == root_identifier) {
         path_list.pop_front();
@@ -27,6 +31,10 @@ key_pair hd_trie::search(std::string_view path) {
 }
 
 key_pair hd_trie::internal_search_helper(std::list<std::string_view> &path_list, hd_node *curr_node, size_t depth) {
+    if (!curr_node) {
+        throw std::invalid_argument("Current node cannot be null");
+    }
+
     if (path_list.empty()) {
         return curr_node->k_pair;
     }
@@ -55,6 +63,9 @@ key_pair hd_trie::internal_search_helper(std::list<std::string_view> &path_list,
 }
 // Store string views in your list to avoid creating new strings
 std::list<std::string_view> hd_trie::get_path_list_from_string(std::string_view path) {
+    if (path.find_first_not_of(std::string("m0123456789") + std::string(path_delimiter) + std::string(hardened_key_identifier)) != std::string_view::npos) {
+        throw std::invalid_argument("Path contains invalid characters");
+    }
     const std::string_view delim = path_delimiter.data();
     std::list<std::string_view> path_list;
     for (auto &&word_range: std::views::split(path, delim)) {
