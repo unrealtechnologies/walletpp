@@ -9,7 +9,6 @@
 #include "master_key_generator.h"
 #include <list>
 #include <ranges>
-#include <string>
 
 class hd_trie {
     std::unique_ptr<hd_node> root = nullptr;
