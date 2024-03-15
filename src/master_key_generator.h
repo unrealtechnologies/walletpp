@@ -5,7 +5,6 @@
 #ifndef MASTER_KEY_GENERATOR_H
 #define MASTER_KEY_GENERATOR_H
 
-#include "constants.h"
 #include "crypto_algorithms.h"
 #include "extended_key.h"
 #include "key_pair.h"

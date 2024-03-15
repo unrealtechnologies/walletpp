@@ -13,7 +13,7 @@
 
 
 struct extended_key {
-    bool is_private_key = true;
+    bool is_private_key;
     Botan::secure_vector<uint8_t> key;
     Botan::secure_vector<uint8_t> chain_code;
     std::optional<Botan::secure_vector<uint8_t>> parent_finger_print;
@@ -31,6 +31,13 @@ struct extended_key {
         this->parent_finger_print = parent_finger_print;
         this->depth = depth;
         this->index = index;
+        if (key.size() == walletpp::private_key_bytes_length) {
+            is_private_key = true;
+        } else if (key.size() == walletpp::public_key_bytes_length) {
+            is_private_key = false;
+        } else {
+            throw std::runtime_error("Incorrect key size");
+        }
     }
 
     Botan::secure_vector<uint8_t> serialize() {

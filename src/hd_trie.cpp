@@ -17,11 +17,12 @@ hd_trie::hd_trie(const Botan::secure_vector<uint8_t> &seed) {
 
 key_pair hd_trie::search(std::string_view path) {
     auto path_list = get_path_list_from_string(path);
-    if (path_list.front() == "m") {
+    if (path_list.front() == root_identifier) {
         path_list.pop_front();
     } else {
         throw std::runtime_error("Invalid path");
     }
+
     return internal_search_helper(path_list, root.get(), 0);
 }
 
@@ -34,7 +35,7 @@ key_pair hd_trie::internal_search_helper(std::list<std::string> &path_list, hd_n
     for (const auto &local_path: path_list) {
         size_t index;
         try {
-            if (const auto i = local_path.find('\''); i == -1) {//not hardered
+            if (const auto i = local_path.find(hardened_key_identifier); i == -1) {//not hardered
                 index = std::stoull(local_path);
             } else {
                 index = std::stoull(local_path.substr(0, local_path.length() - 1));
@@ -53,11 +54,12 @@ key_pair hd_trie::internal_search_helper(std::list<std::string> &path_list, hd_n
     return currnode->k_pair;
 }
 std::list<std::string> hd_trie::get_path_list_from_string(std::string_view path) {
-    const std::string delim = "/";
+    const std::string delim = path_delimiter.data();
     std::list<std::string> path_list;
     for (auto &&word_range: std::views::split(path, delim)) {
         std::string word{word_range.begin(), static_cast<std::size_t>(std::ranges::distance(word_range))};
         path_list.emplace_back(word);
     }
+
     return path_list;
 }
