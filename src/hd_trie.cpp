@@ -26,7 +26,7 @@ key_pair hd_trie::search(std::string_view path) {
     return internal_search_helper(path_list, root.get(), 0);
 }
 
-key_pair hd_trie::internal_search_helper(std::list<std::string> &path_list, hd_node *curr_node, size_t depth) {
+key_pair hd_trie::internal_search_helper(std::list<std::string_view> &path_list, hd_node *curr_node, size_t depth) {
     if (path_list.empty()) {
         return curr_node->k_pair;
     }
@@ -36,9 +36,9 @@ key_pair hd_trie::internal_search_helper(std::list<std::string> &path_list, hd_n
         size_t index;
         try {
             if (const auto i = local_path.find(hardened_key_identifier); i == -1) {//not hardered
-                index = std::stoull(local_path);
+                index = std::stoull(std::string(local_path));
             } else {
-                index = std::stoull(local_path.substr(0, local_path.length() - 1));
+                index = std::stoull(std::string(local_path.substr(0, local_path.length() - 1)));
             }
         } catch (const std::invalid_argument &ia) {
             std::cerr << "Invalid argument: " << ia.what() << std::endl;
@@ -53,12 +53,12 @@ key_pair hd_trie::internal_search_helper(std::list<std::string> &path_list, hd_n
 
     return currnode->k_pair;
 }
-std::list<std::string> hd_trie::get_path_list_from_string(std::string_view path) {
-    const std::string delim = path_delimiter.data();
-    std::list<std::string> path_list;
+// Store string views in your list to avoid creating new strings
+std::list<std::string_view> hd_trie::get_path_list_from_string(std::string_view path) {
+    const std::string_view delim = path_delimiter.data();
+    std::list<std::string_view> path_list;
     for (auto &&word_range: std::views::split(path, delim)) {
-        std::string word{word_range.begin(), static_cast<std::size_t>(std::ranges::distance(word_range))};
-        path_list.emplace_back(word);
+        path_list.emplace_back(word_range);
     }
 
     return path_list;
