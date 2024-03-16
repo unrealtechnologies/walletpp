@@ -5,17 +5,12 @@
 #include "crypto_algorithms.h"
 #include "secp256k1.h"
 #include "secp256k1_context_singleton.h"
-
 #include <botan/auto_rng.h>
 #include <botan/base58.h>
 #include <botan/hex.h>
 #include <botan/mac.h>
 #include <botan/pwdhash.h>
 
-/*
-*     const auto hash2 = Botan::HashFunction::create_or_throw("Keccak-1600(256)");
-const auto hash3 = Botan::HashFunction::create_or_throw("RIPEMD-160");
- */
 
 std::array<uint8_t, crypto_algorithms::sha256_output_byte_size> crypto_algorithms::sha256(const Botan::secure_vector<uint8_t> &contents) {
     const auto hash1 = Botan::HashFunction::create_or_throw("SHA-256");
@@ -122,6 +117,7 @@ Botan::secure_vector<uint8_t> crypto_algorithms::hmac512(const Botan::secure_vec
 
     // Copy the output to a new vector that uses the default allocator
     Botan::secure_vector<uint8_t> result(hmacResult.begin(), hmacResult.end());
+
     return result;
 }
 
@@ -182,6 +178,7 @@ Botan::secure_vector<uint8_t> crypto_algorithms::generate_entropy(const size_t b
     // Generate a vector of random bytes
     Botan::secure_vector<uint8_t> random_data(bytes_size);
     rng.randomize(random_data.data(), random_data.size());
+
     return random_data;
 }
 
@@ -194,6 +191,7 @@ uint32_t crypto_algorithms::htobe32(const uint32_t x) {
     std::vector<uint8_t> vec(u.bytes, u.bytes + 4);
     std::ranges::reverse(vec);
     std::ranges::copy(vec, u.bytes);
+
     return u.val;
 }
 
@@ -209,5 +207,6 @@ Botan::secure_vector<uint8_t> crypto_algorithms::uint32_to_big_endian_bytes(cons
     bytes[1] = static_cast<uint8_t>((value >> 16) & 0xFF);
     bytes[2] = static_cast<uint8_t>((value >> 8) & 0xFF);
     bytes[3] = static_cast<uint8_t>(value & 0xFF);
+
     return bytes;
 }
