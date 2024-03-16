@@ -43,7 +43,7 @@ if (NOT ${lcName}_POPULATED)
 
     add_library(Botan::botan STATIC IMPORTED GLOBAL
             ../include/walletpp.h
-            ../src/walletpp.cpp)
+    )
     add_dependencies(Botan::botan botan_project)
 
     # Workaround for INTERFACE_INCLUDE_DIRECTORIES. The problem is the include

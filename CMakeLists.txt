@@ -9,7 +9,6 @@ include(${CMAKE_CURRENT_LIST_DIR}/cmake/botan.cmake)
 
 add_library(${LIB_NAME} STATIC
         include/walletpp.h
-        src/walletpp.cpp
         src/entropy.cpp
         src/entropy.h
         src/bip39.cpp
@@ -35,6 +34,7 @@ add_library(${LIB_NAME} STATIC
         src/hd_node.h
         src/ethereum_utils.cpp
         src/ethereum_utils.h
+        src/extended_key.cpp
 )
 
 target_include_directories(${LIB_NAME}

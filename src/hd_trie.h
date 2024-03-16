@@ -18,8 +18,8 @@ class hd_trie {
     std::unique_ptr<hd_node> root = nullptr;
 
     void initialize_with_seed(const Botan::secure_vector<uint8_t> &seed);
-    [[nodiscard]] key_pair internal_search_helper(std::list<std::string_view> &path_list, hd_node *curr_node, size_t depth);
-    [[nodiscard]] std::list<std::string_view> get_path_list_from_string(std::string_view path);
+    [[nodiscard]] auto internal_search_helper(std::list<std::string_view> &path_list, hd_node *curr_node, size_t depth) -> key_pair;
+    [[nodiscard]] auto get_path_list_from_string(std::string_view path) -> std::list<std::string_view>;
 
 public:
     explicit hd_trie(const key_pair &k_pair) : root(std::make_unique<hd_node>(k_pair)) {}
