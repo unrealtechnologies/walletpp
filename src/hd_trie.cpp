@@ -46,7 +46,7 @@ key_pair hd_trie::internal_search_helper(std::list<std::string_view> &path_list,
             if (const auto i = local_path.find(hardened_key_identifier); i == -1) {//not hardered
                 index = std::stoull(std::string(local_path));
             } else {
-                index = std::stoull(std::string(local_path.substr(0, local_path.length() - 1)));
+                index = walletpp::hardened_key_start_index + std::stoull(std::string(local_path.substr(0, local_path.length() - 1)));
             }
         } catch (const std::invalid_argument &ia) {
             std::cerr << "Invalid argument: " << ia.what() << std::endl;
