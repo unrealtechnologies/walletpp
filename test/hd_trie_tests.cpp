@@ -4,20 +4,7 @@
 #include "catch2/catch_test_macros.hpp"
 #include "crypto_algorithms.h"
 #include "ethereum_utils.h"
-#include "hd_derivation.h"
 #include "hd_trie.h"
-#include "master_key_generator.h"
-
-// TEST_CASE("Ethereum address generation", "[extended_key]") {
-//     const std::string seed_hex_string = "000102030405060708090a0b0c0d0e0f";
-//     const auto seed = crypto_algorithms::from_hex(seed_hex_string);
-//     const auto trie = std::make_unique<hd_trie>(seed);
-//
-//     auto key_pair = trie->search("m/0");
-//     std::string generated_address = key_pair.public_key.generate_ethereum_address();
-//
-//     REQUIRE(generated_address == "0xAEfbb50942817d8270Bb9bD922aA5ca9cb06cDBf");
-// }
 
 SCENARIO("Deriving key-pair values given a bip32 tree path string", "[hd-trie]") {
     const std::string seed_hex_string = "000102030405060708090a0b0c0d0e0f";
