@@ -6,10 +6,14 @@
 #define BIP32_H
 
 #include "extended_key.h"
+#include "key_pair.h"
+
 #include <array>
 #include <cstddef>
 
 class bip32 {
+    key_pair from_base_58(const std::string_view &key);
+    key_pair derive_path(const std::string_view &path);
 };
 
 

@@ -6,9 +6,9 @@
 #define CRYPTO_ALGORITHMS_H
 
 #include <botan/hash.h>
+#include <stdlib.h>
 #include <string>
 #include <vector>
-#include <stdlib.h>
 
 struct crypto_algorithms {
     constexpr static std::string_view pbkdf2_algorithm = "PBKDF2(SHA-512)";
@@ -20,6 +20,8 @@ struct crypto_algorithms {
     [[nodiscard]] static std::array<uint8_t, sha256_output_byte_size> sha256(const Botan::secure_vector<uint8_t> &contents);
     [[nodiscard]] static std::array<uint8_t, sha256_output_byte_size> double_sha256(const Botan::secure_vector<uint8_t> &contents);
     [[nodiscard]] static Botan::secure_vector<uint8_t> ripemd160(const Botan::secure_vector<uint8_t> &contents);
+    [[nodiscard]] static Botan::secure_vector<uint8_t> keccak256(const Botan::secure_vector<uint8_t> &contents);
+    [[nodiscard]] static auto keccak256(const std::string &contents) -> Botan::secure_vector<uint8_t>;
     [[nodiscard]] static std::string to_hex(const std::span<uint8_t> &contents);
     [[nodiscard]] static Botan::secure_vector<uint8_t> from_hex(const std::string &hex_string);
     [[nodiscard]] static std::array<uint8_t, pbkdf2_sha512_output_byte_size> pbkdf2(const Botan::secure_vector<uint8_t> &password, const Botan::secure_vector<uint8_t> &salt);

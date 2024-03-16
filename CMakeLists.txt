@@ -33,6 +33,8 @@ add_library(${LIB_NAME} STATIC
         src/hd_trie.h
         src/hd_node.cpp
         src/hd_node.h
+        src/ethereum_utils.cpp
+        src/ethereum_utils.h
 )
 
 target_include_directories(${LIB_NAME}

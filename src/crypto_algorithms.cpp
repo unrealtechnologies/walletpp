@@ -48,6 +48,19 @@ Botan::secure_vector<uint8_t> crypto_algorithms::ripemd160(const Botan::secure_v
 
     return hash->final();
 }
+Botan::secure_vector<uint8_t> crypto_algorithms::keccak256(const Botan::secure_vector<uint8_t> &contents) {
+    const auto hash = Botan::HashFunction::create_or_throw("Keccak-1600(256)");
+    hash->update(contents);
+
+    return hash->final();
+}
+
+Botan::secure_vector<uint8_t> crypto_algorithms::keccak256(const std::string &contents) {
+    const auto hash = Botan::HashFunction::create_or_throw("Keccak-1600(256)");
+    hash->update(contents);
+
+    return hash->final();
+}
 
 std::string crypto_algorithms::to_hex(const std::span<uint8_t> &contents) {
     return Botan::hex_encode(contents);

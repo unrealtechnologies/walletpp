@@ -17,6 +17,8 @@ namespace walletpp {
     static constexpr size_t extended_key_version_byte_length = 4;
     static constexpr size_t fingerprint_byte_length = 4;
     static constexpr uint8_t zero_byte = 0x00;
+    static constexpr uint8_t public_key_uncompressed_bytes_length = 65;
+    static constexpr uint8_t public_key_uncompressed_form_id = 0x04;
     static constexpr size_t hardened_key_start_index = 0x80000000;
     static const Botan::secure_vector<uint8_t> master_key_parent_key{0x00, 0x00, 0x00, 0x00};
     typedef Botan::secure_vector<uint8_t> bytes_buffer;
