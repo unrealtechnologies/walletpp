@@ -4,6 +4,10 @@ set(CMAKE_CXX_STANDARD 23)
 project(walletpp)
 set(LIB_NAME walletpp)
 
+set(CMAKE_CXX_FLAGS "-Wall -Wextra")
+set(CMAKE_CXX_FLAGS_DEBUG "-g")
+set(CMAKE_CXX_FLAGS_RELEASE "-O3")
+
 include(${CMAKE_CURRENT_LIST_DIR}/cmake/secp256k1.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/cmake/botan.cmake)
 
@@ -37,20 +41,29 @@ add_library(${LIB_NAME} STATIC
         src/extended_key.cpp
 )
 
+message(currentdir: ${CMAKE_CURRENT_SOURCE_DIR})
+
 target_include_directories(${LIB_NAME}
         PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
+        PRIVATE
         ${secp256k1_SOURCE_DIR}/include
 )
 
 target_link_libraries(${LIB_NAME}
-        PRIVATE
-        secp256k1
         PUBLIC
+        secp256k1
         Botan::botan
 )
 
 option(BUILD_TESTS "Build tests" ON)
-
 if (BUILD_TESTS)
     add_subdirectory(test)
+endif ()
+
+option(BUILD_VANITY_PROJECT "Build vanity project" ON)
+if (BUILD_VANITY_PROJECT)
+    add_subdirectory(vanity-address-generator)
+    target_link_libraries(vanity_address_generator PUBLIC ${LIB_NAME})
 endif ()
