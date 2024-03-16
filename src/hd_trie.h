@@ -11,10 +11,11 @@
 #include <ranges>
 
 class hd_trie {
+    const std::string_view root_identifier = "m";
+    const std::string_view path_delimiter = "/";
+    const std::string_view hardened_key_identifier = "'";
+
     std::unique_ptr<hd_node> root = nullptr;
-    std::string_view root_identifier = "m";
-    std::string_view path_delimiter = "/";
-    std::string_view hardened_key_identifier = "'";
 
     void initialize_with_seed(const Botan::secure_vector<uint8_t> &seed);
     [[nodiscard]] key_pair internal_search_helper(std::list<std::string_view> &path_list, hd_node *curr_node, size_t depth);
