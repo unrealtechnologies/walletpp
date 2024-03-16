@@ -11,6 +11,14 @@
 #include <botan/mac.h>
 #include <botan/pwdhash.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+#include "fastpbkdf2/fastpbkdf2.h"
+#ifdef __cplusplus
+}
+#endif
+
 
 std::array<uint8_t, crypto_algorithms::sha256_output_byte_size> crypto_algorithms::sha256(const Botan::secure_vector<uint8_t> &contents) {
     const auto hash1 = Botan::HashFunction::create_or_throw("SHA-256");
@@ -91,6 +99,17 @@ std::array<uint8_t, crypto_algorithms::pbkdf2_sha512_output_byte_size> crypto_al
     pwd_hash->hash(key, password, salt_vector);
 
     return key;
+}
+
+std::array<uint8_t, crypto_algorithms::pbkdf2_sha512_output_byte_size> crypto_algorithms::fastpbkdf2(const std::string_view password, const std::string_view salt) {
+    std::array<uint8_t, pbkdf2_sha512_output_byte_size> out{};
+
+    fastpbkdf2_hmac_sha512(reinterpret_cast<const uint8_t *>(password.data()), password.size(),
+                           reinterpret_cast<const uint8_t *>(salt.data()), salt.size(),
+                           pbkdf2_iterations,
+                           out.data(), out.size());
+
+    return out;
 }
 
 Botan::secure_vector<bool> crypto_algorithms::binary_from_bytes(const Botan::secure_vector<uint8_t> &bytes, const std::optional<size_t> &num_of_bits) {

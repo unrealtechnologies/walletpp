@@ -21,7 +21,7 @@ void findAddress() {
         const auto address_0 = ethereum_utils::generate_ethereum_address(key_pair_address_0.private_key.key);
 
         if (address_0.contains("0x00000000")) {
-            for (auto word: words) {
+            for (const auto word: words) {
                 std::cout << word << " ";
             }
             std::cout << std::endl;
