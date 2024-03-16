@@ -3,11 +3,12 @@
 //
 
 #include "hd_node.h"
+#include "hd_derivation.h"
+
 
 hd_node *hd_node::insert_child(size_t index) {
     // Check if the child already exists and return it if so
-    auto search = children.find(index);
-    if (search != children.end()) {
+    if (const auto search = children.find(index); search != children.end()) {
         return search->second.get(); // Return existing node
     }
 
