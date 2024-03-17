@@ -233,30 +233,3 @@ Botan::secure_vector<uint8_t> crypto_algorithms::uint32_to_big_endian_bytes(cons
 
     return bytes;
 }
-
-Botan::secure_vector<uint8_t> hmac_sha512_internal(const char* key, std::size_t klen, const char* data, std::size_t dlen) {
-    std::uint8_t digest[EVP_MAX_MD_SIZE];
-    std::uint32_t dilen{};
-
-    auto p = ::HMAC(
-        ::EVP_sha512()
-        , key
-        , klen
-        , (std::uint8_t*)data
-        , dlen
-        , digest
-        , &dilen
-    );
-    assert(p);
-
-    return {digest, digest + dilen};
-}
-
-Botan::secure_vector<uint8_t> crypto_algorithms::hmac_sha512(const Botan::secure_vector<uint8_t> &msg, const Botan::secure_vector<uint8_t> &key) {
-    // Convert Botan::secure_vector to const char* for key and data
-    const char* key_ptr = reinterpret_cast<const char*>(key.data());
-    const char* data_ptr = reinterpret_cast<const char*>(msg.data());
-
-    // Call the internal HMAC function
-    return hmac_sha512_internal(key_ptr, key.size(), data_ptr, msg.size());
-}
