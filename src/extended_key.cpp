@@ -6,7 +6,7 @@
 #include <array>
 #include <botan/base58.h>
 
-auto extended_key::serialize() -> Botan::secure_vector<uint8_t>  {
+auto extended_key::serialize() const -> Botan::secure_vector<uint8_t>  {
     Botan::secure_vector<uint8_t> serialized_key;
     serialized_key.reserve(walletpp::serialized_extended_key_bytes_length);
 
@@ -33,13 +33,13 @@ auto extended_key::serialize() -> Botan::secure_vector<uint8_t>  {
     return serialized_key;
 }
 
-std::string extended_key::to_base58_string() {
+std::string extended_key::to_base58_string() const {
     auto serialized_buff = serialize();
     auto base58_string = Botan::base58_encode(serialized_buff);
     return base58_string;
 }
 
-Botan::secure_vector<uint8_t> extended_key::to_base58_vector() {
+Botan::secure_vector<uint8_t> extended_key::to_base58_vector() const {
     auto base58_string = to_base58_string();
     Botan::secure_vector<uint8_t> base58_vec{base58_string.begin(), base58_string.end()};
     crypto_algorithms::secure_erase_string(base58_string);
