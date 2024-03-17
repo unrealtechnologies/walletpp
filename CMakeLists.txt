@@ -10,6 +10,7 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
 include(${CMAKE_CURRENT_LIST_DIR}/cmake/secp256k1.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/cmake/botan.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/cmake/fastpbkdf2.cmake)
 
 add_library(${LIB_NAME} STATIC
         include/walletpp.h
@@ -41,20 +42,25 @@ add_library(${LIB_NAME} STATIC
         src/extended_key.cpp
 )
 
-message(currentdir: ${CMAKE_CURRENT_SOURCE_DIR})
-
 target_include_directories(${LIB_NAME}
         PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/src
         ${CMAKE_CURRENT_SOURCE_DIR}/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty
         PRIVATE
         ${secp256k1_SOURCE_DIR}/include
+        ${OPENSSL_INCLUDE_DIR}
 )
+
+message(OPENSSL${OPENSSL_INCLUDE_DIR})
 
 target_link_libraries(${LIB_NAME}
         PUBLIC
         secp256k1
         Botan::botan
+        OpenSSL::SSL
+        OpenSSL::Crypto
+        fastpbkdf2
 )
 
 option(BUILD_TESTS "Build tests" ON)

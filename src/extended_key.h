@@ -39,9 +39,9 @@ struct extended_key {
               throw std::runtime_error("Incorrect key size");
           }()) {}
 
-    [[nodiscard]] auto serialize() -> Botan::secure_vector<uint8_t>;
-    [[nodiscard]] auto to_base58_string() -> std::string;
-    [[nodiscard]] auto to_base58_vector() -> Botan::secure_vector<uint8_t>;
+    [[nodiscard]] auto serialize() const -> Botan::secure_vector<uint8_t>;
+    [[nodiscard]] auto to_base58_string() const -> std::string;
+    [[nodiscard]] auto to_base58_vector() const -> Botan::secure_vector<uint8_t>;
     [[nodiscard]] static auto fingerprint(const Botan::secure_vector<uint8_t> &key) -> Botan::secure_vector<uint8_t>;
 };
 
