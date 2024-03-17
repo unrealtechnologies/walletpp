@@ -29,6 +29,7 @@ struct crypto_algorithms {
     [[nodiscard]] static std::array<uint8_t, pbkdf2_sha512_output_byte_size> fastpbkdf2(std::string_view password, std::string_view salt);
     [[nodiscard]] static Botan::secure_vector<bool> binary_from_bytes(const Botan::secure_vector<uint8_t> &bytes, const std::optional<size_t> &num_of_bits);
     [[nodiscard]] static Botan::secure_vector<uint8_t> hmac512(const Botan::secure_vector<uint8_t> &msg, const Botan::secure_vector<uint8_t> &key);
+    [[nodiscard]] static Botan::secure_vector<uint8_t> hmac_sha512(const Botan::secure_vector<uint8_t> &msg, const Botan::secure_vector<uint8_t> &key);
     [[nodiscard]] static Botan::secure_vector<uint8_t> generate_private_key(const Botan::secure_vector<uint8_t> &key, const Botan::secure_vector<uint8_t> &tweak);
     [[nodiscard]] static Botan::secure_vector<uint8_t> generate_public_key(const Botan::secure_vector<uint8_t> &key, bool compressed);
     [[nodiscard]] static Botan::secure_vector<uint8_t> generate_entropy(size_t bytes_size);

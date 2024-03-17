@@ -21,12 +21,13 @@ extended_key hd_derivation::private_child_key_derivation(const extended_key &par
         Botan::secure_vector<uint8_t> p_key = {walletpp::zero_byte};
         p_key.insert(p_key.end(), parent_key.key.begin(), parent_key.key.end());
         p_key.insert(p_key.end(), index_be_format.begin(), index_be_format.end());
-        output = crypto_algorithms::hmac512(p_key, parent_key.chain_code);
+        output = crypto_algorithms::hmac_sha512(p_key, parent_key.chain_code);
     } else {
         Botan::secure_vector<uint8_t> p_key{};
         p_key.insert(p_key.end(), parent_public_key.begin(), parent_public_key.end());
         p_key.insert(p_key.end(), index_be_format.begin(), index_be_format.end());
-        output = crypto_algorithms::hmac512(p_key, parent_key.chain_code);
+        // output = crypto_algorithms::hmac512(p_key, parent_key.chain_code);
+        output = crypto_algorithms::hmac_sha512(p_key, parent_key.chain_code);
     }
 
     const Botan::secure_vector<uint8_t> IL = {output.begin(), output.begin() + walletpp::private_key_bytes_length};

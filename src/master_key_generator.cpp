@@ -7,7 +7,7 @@
 std::unique_ptr<extended_key> walletpp::master_key_generator::generate_private_key(const Botan::secure_vector<uint8_t> &seed) {
     const std::string key_string = "Bitcoin seed";
     const Botan::secure_vector<uint8_t> key{key_string.begin(), key_string.end()};
-    const auto hash_output = crypto_algorithms::hmac512(seed, key);
+    const auto hash_output = crypto_algorithms::hmac_sha512(seed, key);
 
     Botan::secure_vector<uint8_t> m_key = {hash_output.begin(), hash_output.begin() + private_key_bytes_length};
     Botan::secure_vector<uint8_t> m_chaincode = {hash_output.begin() + chaincode_byte_lenth, hash_output.end()};
