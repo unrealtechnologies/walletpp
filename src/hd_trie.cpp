@@ -8,14 +8,14 @@
 
 void hd_trie::initialize_with_seed(const Botan::secure_vector<uint8_t> &seed) {
     const auto kp = walletpp::master_key_generator::generate_master_key_pair(seed);
-    root = std::make_unique<hd_node>(*kp);
+    root = std::make_unique<hd_node>(*kp, std::shared_ptr<hd_node>{});
 }
 
 hd_trie::hd_trie(const Botan::secure_vector<uint8_t> &seed) {
     initialize_with_seed(seed);
 }
 
-key_pair hd_trie::search(std::string_view path) {
+hd_node* hd_trie::search(std::string_view path) {
     if (path.empty()) {
         throw std::invalid_argument("Path cannot be empty");
     }
@@ -30,13 +30,13 @@ key_pair hd_trie::search(std::string_view path) {
     return internal_search_helper(path_list, root.get(), 0);
 }
 
-key_pair hd_trie::internal_search_helper(std::list<std::string_view> &path_list, hd_node *curr_node, size_t depth) {
+hd_node* hd_trie::internal_search_helper(std::list<std::string_view> &path_list, hd_node *curr_node, size_t depth) {
     if (!curr_node) {
         throw std::invalid_argument("Current node cannot be null");
     }
 
     if (path_list.empty()) {
-        return curr_node->k_pair;
+        return curr_node;
     }
 
     hd_node *currnode = curr_node;
@@ -56,10 +56,10 @@ key_pair hd_trie::internal_search_helper(std::list<std::string_view> &path_list,
             throw std::runtime_error("Out of range error");
         }
 
-        currnode = currnode->insert_child(index);
+        currnode = currnode->derive_child(index);
     }
 
-    return currnode->k_pair;
+    return currnode;
 }
 // Store string views in your list to avoid creating new strings
 std::list<std::string_view> hd_trie::get_path_list_from_string(std::string_view path) {

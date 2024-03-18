@@ -35,7 +35,7 @@ public:
         return bip32(*master_key_pair);// Directly return a bip32 object
     }
 
-    [[nodiscard]] auto derive_keypair_with_path(const std::string_view path) const -> key_pair {
+    [[nodiscard]] auto derive_keypair_with_path(const std::string_view path) const -> hd_node* {
         return tree->search(path);
     }
 };
