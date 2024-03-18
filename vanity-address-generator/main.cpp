@@ -13,21 +13,22 @@
 #include "constants.h"
 #include "extended_key.h"
 
-void findAddress() {
+void findAddress(unsigned int start, unsigned int step) {
     while (true) {
         const auto entrop = entropy::generate_entropy(32);
         const auto words = bip39::mnemonic_from_entropy(entrop);
         const auto seed = bip39::seed_from_mnemonic(words);
         const auto b32 = bip32::from_entropy(seed);
 
-        // const auto root_node = b32.derive_keypair_with_path("m/44'/60'/0'/0");
-        for (auto j = 0; j < walletpp::hardened_key_start_index; j++) {
-            std::ostringstream path_stream;
-            path_stream << "m/44'/60'/0'/0/" << j;
-            const auto path_string = path_stream.str();
-            const auto key_pair_address = b32.derive_keypair_with_path(path_string);
+        auto root_path_string = "m/44'/60'/0'/0";
+        const auto node = b32.derive_keypair_with_path(root_path_string);
 
-            if (const auto address = ethereum_utils::generate_ethereum_address(key_pair_address.private_key.key); address.contains("0x00000000")) {
+        for (size_t j = start; j < walletpp::hardened_key_start_index; j += step) {
+
+            auto derived_node = node->derive_child(j);
+            auto key_pair = derived_node->get_key_pair();
+
+            if (const auto address = ethereum_utils::generate_ethereum_address(key_pair.private_key.key); address.contains("0x000000")) {
                 for (auto word: words) {
                     std::cout << word << " ";
                 }
@@ -36,6 +37,8 @@ void findAddress() {
 
                 break; // Exit the loop if a matching address is found
             }
+
+            node->remove_child(j);
         }
     }
 }
@@ -45,7 +48,7 @@ int main() {
     std::vector<std::thread> threads;
 
     for (unsigned int i = 0; i < cores; ++i) {
-        threads.emplace_back(findAddress);
+        threads.emplace_back(findAddress, i, cores);
     }
 
     for (auto& th : threads) {
