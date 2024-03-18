@@ -20,13 +20,13 @@ void findAddress(unsigned int start, unsigned int step) {
         const auto seed = bip39::seed_from_mnemonic(words);
         const auto b32 = bip32::from_entropy(seed);
 
-        auto root_path_string = "m/44'/60'/0'/0";
+        const auto root_path_string = "m/44'/60'/0'/0";
         const auto node = b32.derive_keypair_with_path(root_path_string);
 
         for (size_t j = start; j < walletpp::hardened_key_start_index; j += step) {
 
-            auto derived_node = node->derive_child(j);
-            auto key_pair = derived_node->get_key_pair();
+            const auto derived_node = node->derive_child(j);
+            const auto key_pair = derived_node->get_key_pair();
 
             if (const auto address = ethereum_utils::generate_ethereum_address(key_pair.private_key.key); address.contains("0x000000")) {
                 for (auto word: words) {
@@ -34,8 +34,6 @@ void findAddress(unsigned int start, unsigned int step) {
                 }
                 std::cout << std::endl;
                 std::cout << address << " with index:" << j << std::endl;
-
-                break; // Exit the loop if a matching address is found
             }
 
             node->remove_child(j);
