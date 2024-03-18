@@ -7,9 +7,8 @@
 
 #include "hd_node.h"
 #include "master_key_generator.h"
-#include <list>
 #include <ranges>
-#include <memory>
+#include <vector>
 
 class hd_trie {
     const std::string_view root_identifier = "m";
@@ -19,17 +18,18 @@ class hd_trie {
     std::shared_ptr<hd_node> root = nullptr;
 
     void initialize_with_seed(const Botan::secure_vector<uint8_t> &seed);
-    [[nodiscard]] auto internal_search_helper(std::list<std::string_view> &path_list, hd_node *curr_node, size_t depth) -> hd_node*;
-    [[nodiscard]] auto get_path_list_from_string(std::string_view path) -> std::list<std::string_view>;
+
+    [[nodiscard]] auto internal_search_helper(const std::vector<std::string_view> &path_vector, hd_node *curr_node, size_t depth) const -> hd_node *;
+    [[nodiscard]] auto get_path_vector_from_string(std::string_view path) const -> std::vector<std::string_view>;
 
 public:
     explicit hd_trie(const key_pair &k_pair) : root([&]() -> std::shared_ptr<hd_node> {
                                                    std::weak_ptr<hd_node> null_parent;
                                                    return std::make_unique<hd_node>(k_pair, null_parent);
                                                }()) {}
-
     explicit hd_trie(const Botan::secure_vector<uint8_t> &seed);
-    [[nodiscard]] auto search(std::string_view path) -> hd_node*;
+
+    [[nodiscard]] auto search(std::string_view path) const -> hd_node *;
 };
 
 

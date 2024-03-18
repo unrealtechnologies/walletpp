@@ -4,7 +4,9 @@
 
 #include "hd_trie.h"
 
+#include <charconv>
 #include <iostream>
+
 
 void hd_trie::initialize_with_seed(const Botan::secure_vector<uint8_t> &seed) {
     const auto kp = walletpp::master_key_generator::generate_master_key_pair(seed);
@@ -15,14 +17,16 @@ hd_trie::hd_trie(const Botan::secure_vector<uint8_t> &seed) {
     initialize_with_seed(seed);
 }
 
-hd_node* hd_trie::search(std::string_view path) {
+hd_node *hd_trie::search(std::string_view path) const {
     if (path.empty()) {
         throw std::invalid_argument("Path cannot be empty");
     }
 
-    auto path_list = get_path_list_from_string(path);
+    auto path_list = get_path_vector_from_string(path);
     if (path_list.front() == root_identifier) {
-        path_list.pop_front();
+        if (path_list.size() == 1) {
+            return root.get();
+        }
     } else {
         throw std::runtime_error("Invalid path");
     }
@@ -30,30 +34,25 @@ hd_node* hd_trie::search(std::string_view path) {
     return internal_search_helper(path_list, root.get(), 0);
 }
 
-hd_node* hd_trie::internal_search_helper(std::list<std::string_view> &path_list, hd_node *curr_node, size_t depth) {
+hd_node *hd_trie::internal_search_helper(const std::vector<std::string_view> &path_vector, hd_node *curr_node, size_t depth) const {
     if (!curr_node) {
         throw std::invalid_argument("Current node cannot be null");
     }
 
-    if (path_list.empty()) {
+    if (path_vector.empty()) {
         return curr_node;
     }
 
     hd_node *currnode = curr_node;
-    for (const auto &local_path: path_list) {
+    for (size_t i = 1; i < path_vector.size(); i++) {
+        std::string_view local_path = path_vector.at(i);
+
         size_t index;
-        try {
-            if (const auto i = local_path.find(hardened_key_identifier); i == -1) {//not hardered
-                index = std::stoull(std::string(local_path));
-            } else {
-                index = walletpp::hardened_key_start_index + std::stoull(std::string(local_path.substr(0, local_path.length() - 1)));
-            }
-        } catch (const std::invalid_argument &ia) {
-            std::cerr << "Invalid argument: " << ia.what() << std::endl;
-            throw std::runtime_error("Invalid argument error");
-        } catch (const std::out_of_range &oor) {
-            std::cerr << "Out of range: " << oor.what() << std::endl;
-            throw std::runtime_error("Out of range error");
+        if (const auto j = local_path.find(hardened_key_identifier); j == -1) {//not hardered
+            std::from_chars(local_path.data(), local_path.data() + local_path.size(), index);
+        } else {
+            std::from_chars(local_path.data(), local_path.data() + local_path.size() - 1, index);
+            index += walletpp::hardened_key_start_index;
         }
 
         currnode = currnode->derive_child(index);
@@ -61,16 +60,16 @@ hd_node* hd_trie::internal_search_helper(std::list<std::string_view> &path_list,
 
     return currnode;
 }
-// Store string views in your list to avoid creating new strings
-std::list<std::string_view> hd_trie::get_path_list_from_string(std::string_view path) {
+
+std::vector<std::string_view> hd_trie::get_path_vector_from_string(std::string_view path) const {
     if (path.find_first_not_of(std::string("0123456789") + std::string(root_identifier) + std::string(path_delimiter) + std::string(hardened_key_identifier)) != std::string_view::npos) {
         throw std::invalid_argument("Path contains invalid characters");
     }
     const std::string_view delim = path_delimiter.data();
-    std::list<std::string_view> path_list;
+    std::vector<std::string_view> path_vector;
     for (auto &&word_range: std::views::split(path, delim)) {
-        path_list.emplace_back(word_range);
+        path_vector.emplace_back(word_range);
     }
 
-    return path_list;
+    return path_vector;
 }
