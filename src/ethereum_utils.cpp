@@ -35,5 +35,7 @@ std::string ethereum_utils::to_checksum_address(const std::string &address) {
         }
     }
 
+    crypto_algorithms::secure_erase_string(hash);
+
     return "0x" + checksum_address;
 }

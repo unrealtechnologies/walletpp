@@ -6,7 +6,7 @@
 #define CRYPTO_ALGORITHMS_H
 
 #include <botan/hash.h>
-#include <stdlib.h>
+#include <cstdlib>
 #include <string>
 #include <vector>
 

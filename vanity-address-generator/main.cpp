@@ -3,15 +3,13 @@
 //
 
 #include "bip32.h"
+#include "constants.h"
 #include "entropy.h"
 #include "ethereum_utils.h"
-
+#include "extended_key.h"
 #include <iostream>
-#include <sstream>
 #include <thread>
 #include <vector>
-#include "constants.h"
-#include "extended_key.h"
 
 void findAddress(unsigned int start, unsigned int step) {
     while (true) {
@@ -49,7 +47,7 @@ int main() {
         threads.emplace_back(findAddress, i, cores);
     }
 
-    for (auto& th : threads) {
+    for (auto &th: threads) {
         th.join();
     }
 
