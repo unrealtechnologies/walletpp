@@ -10,6 +10,7 @@
 #include <fstream>
 #include <thread>
 #include <vector>
+#include <sstream>
 
 void findAddress(unsigned int start, unsigned int step, const std::string &file) {
     std::ofstream outfile;
