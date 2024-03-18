@@ -33,7 +33,7 @@ Botan::secure_vector<uint16_t> bip39::words_index_from_entropy(const Botan::secu
                 word_index |= 1;// Set the last bit if the corresponding bit in entropy_with_checksum is true
             }
         }
-        words_index.push_back(word_index);
+        words_index.emplace_back(word_index);
     }
 
     return words_index;

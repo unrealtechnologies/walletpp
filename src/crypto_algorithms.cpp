@@ -124,7 +124,7 @@ Botan::secure_vector<bool> crypto_algorithms::binary_from_bytes(const Botan::sec
         for (int bit_index = 7; bit_index >= 0 && bits.size() < bits_to_process; --bit_index) {
             // Extract each bit using bitwise AND and shift operations
             bool bit = (bytes[byte_index] & (1 << bit_index)) != 0;
-            bits.push_back(bit);
+            bits.emplace_back(bit);
         }
     }
 
