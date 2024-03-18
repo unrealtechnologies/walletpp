@@ -26,13 +26,12 @@ public:
 
     static bip32 from_entropy(const Botan::secure_vector<uint8_t> &entropy) {
         const auto master_key_pair = walletpp::master_key_generator::generate_master_key_pair(entropy);
-        return bip32(*master_key_pair);// Directly return a bip32 object
+        return bip32(*master_key_pair);
     }
 
     static bip32 from_entropy(const std::array<uint8_t, crypto_algorithms::pbkdf2_sha512_output_byte_size> &entropy_arr) {
-        const Botan::secure_vector<uint8_t>entropy{entropy_arr.begin(), entropy_arr.end()};
-        const auto master_key_pair = walletpp::master_key_generator::generate_master_key_pair(entropy);
-        return bip32(*master_key_pair);// Directly return a bip32 object
+        const auto master_key_pair = walletpp::master_key_generator::generate_master_key_pair(Botan::secure_vector<uint8_t>{entropy_arr.begin(), entropy_arr.end()});
+        return bip32(*master_key_pair);
     }
 
     [[nodiscard]] auto derive_keypair_with_path(const std::string_view path) const -> hd_node* {
