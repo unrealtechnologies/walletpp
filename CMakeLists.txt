@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.28)
+cmake_minimum_required(VERSION 3.27)
 set(CMAKE_CXX_STANDARD 23)
 
 project(walletpp)
@@ -63,7 +63,7 @@ target_link_libraries(${LIB_NAME}
         fastpbkdf2
 )
 
-option(BUILD_TESTS "Build tests" ON)
+option(BUILD_TESTS "Build tests" OFF)
 if (BUILD_TESTS)
     add_subdirectory(test)
 endif ()
