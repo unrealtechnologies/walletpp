@@ -22,8 +22,6 @@ void findAddresses(size_t num_addresses) {
 
         const auto key_pair_address_0 = b32.derive_keypair_with_path("m/44'/60'/0'/0/0");
         const auto address_0 = ethereum_utils::generate_ethereum_address(key_pair_address_0.private_key.key);
-
-        // Removed the if condition that checks for "0x00000000" in the address
     }
 }
 
@@ -49,8 +47,3 @@ int main() {
 
     return 0;
 }
-
-/*
- * Generated 1000000 addresses in 65.7252 seconds.
- * Generated 1000000 addresses in 65.3545 seconds.
- */
