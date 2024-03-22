@@ -69,7 +69,7 @@ std::vector<std::string_view> bip39::mnemonic_from_entropy(const Botan::secure_v
     return words;
 }
 
-std::array<uint8_t, crypto_algorithms::pbkdf2_sha512_output_byte_size> bip39::seed_from_mnemonic(const std::vector<std::string_view> &words_vector, const std::string_view salt) {
+std::array<uint8_t, crypto_algorithms::pbkdf2_sha512_output_byte_size> bip39::seed_from_mnemonic(const std::vector<std::string_view> &words_vector, const std::string_view salt, const size_t number_of_pbkdf2_iterations) {
     std::string result;
     for (auto it = words_vector.begin(); it != words_vector.end(); ++it) {
         std::string word_as_string(it->begin(), it->end());
@@ -82,7 +82,7 @@ std::array<uint8_t, crypto_algorithms::pbkdf2_sha512_output_byte_size> bip39::se
         crypto_algorithms::secure_erase_string(word_as_string);
     }
 
-    const auto seed = crypto_algorithms::fast_pbkdf2(result, salt);
+    const auto seed = crypto_algorithms::fast_pbkdf2(result, salt, number_of_pbkdf2_iterations);
     crypto_algorithms::secure_erase_string(result);
 
     return seed;
