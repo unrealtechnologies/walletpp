@@ -13,7 +13,7 @@
 namespace walletpp {
     static constexpr size_t private_key_bytes_length = 32;
     static constexpr size_t public_key_bytes_length = 33;
-    static constexpr size_t chaincode_byte_lenth = 32;
+    static constexpr size_t chaincode_byte_length = 32;
     static constexpr size_t serialized_extended_key_bytes_length = 82;
     static constexpr size_t extended_key_version_byte_length = 4;
     static constexpr size_t fingerprint_byte_length = 4;
