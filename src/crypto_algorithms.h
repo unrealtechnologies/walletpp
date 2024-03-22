@@ -24,9 +24,7 @@ struct crypto_algorithms {
     [[nodiscard]] static auto keccak256(const std::string &contents) -> Botan::secure_vector<uint8_t>;
     [[nodiscard]] static std::string to_hex(const std::span<uint8_t> &contents);
     [[nodiscard]] static Botan::secure_vector<uint8_t> from_hex(const std::string &hex_string);
-    [[nodiscard]] static std::array<uint8_t, pbkdf2_sha512_output_byte_size> pbkdf2(const Botan::secure_vector<uint8_t> &password, const Botan::secure_vector<uint8_t> &salt);
-    [[nodiscard]] static std::array<uint8_t, pbkdf2_sha512_output_byte_size> pbkdf2(std::string_view password, std::string_view salt);
-    [[nodiscard]] static std::array<uint8_t, pbkdf2_sha512_output_byte_size> fastpbkdf2(std::string_view password, std::string_view salt);
+    [[nodiscard]] static std::array<uint8_t, pbkdf2_sha512_output_byte_size> fast_pbkdf2(const std::string_view password, const std::string_view salt);
     [[nodiscard]] static Botan::secure_vector<bool> binary_from_bytes(const Botan::secure_vector<uint8_t> &bytes, const std::optional<size_t> &num_of_bits);
     [[nodiscard]] static Botan::secure_vector<uint8_t> hmac512(const Botan::secure_vector<uint8_t> &msg, const Botan::secure_vector<uint8_t> &key);
     [[nodiscard]] static Botan::secure_vector<uint8_t> generate_private_key(const Botan::secure_vector<uint8_t> &key, const Botan::secure_vector<uint8_t> &tweak);

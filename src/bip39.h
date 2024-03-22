@@ -15,8 +15,8 @@ class bip39 {
     constexpr static uint8_t entropy_bits_per_word = 11;
     static constexpr int entropy_min_length_in_bytes = 16;
     static constexpr int entropy_max_length_in_bytes = 32;
-    constexpr static uint8_t single_byte_size = 1U;
     constexpr static uint8_t single_byte_bits_length = CHAR_BIT;
+    static constexpr std::string_view default_mnemonic_salt_string = "mnemonic";
 
 public:
     [[nodiscard]] static Botan::secure_vector<uint8_t>
@@ -32,7 +32,7 @@ public:
     mnemonic_from_entropy(const Botan::secure_vector<uint8_t> &entropy);
 
     [[nodiscard]] static std::array<uint8_t, crypto_algorithms::pbkdf2_sha512_output_byte_size>
-    seed_from_mnemonic(const std::vector<std::string_view> &words_vector);
+    seed_from_mnemonic(const std::vector<std::string_view> &words_vector, std::string_view salt = default_mnemonic_salt_string);
 };
 
 
