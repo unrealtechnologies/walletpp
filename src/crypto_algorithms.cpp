@@ -80,12 +80,12 @@ Botan::secure_vector<uint8_t> crypto_algorithms::from_hex(const std::string &hex
     return raw_bytes;
 }
 
-std::array<uint8_t, crypto_algorithms::pbkdf2_sha512_output_byte_size> crypto_algorithms::fast_pbkdf2(const std::string_view password, const std::string_view salt) {
+std::array<uint8_t, crypto_algorithms::pbkdf2_sha512_output_byte_size> crypto_algorithms::fast_pbkdf2(const std::string_view password, const std::string_view salt, const size_t iterations) {
     std::array<uint8_t, pbkdf2_sha512_output_byte_size> out{};
 
     fastpbkdf2_hmac_sha512(reinterpret_cast<const uint8_t *>(password.data()), password.size(),
                            reinterpret_cast<const uint8_t *>(salt.data()), salt.size(),
-                           pbkdf2_iterations,
+                           iterations,
                            out.data(), out.size());
 
     return out;
