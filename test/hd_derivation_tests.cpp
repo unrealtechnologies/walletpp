@@ -10,10 +10,10 @@
 SCENARIO("Deriving first and secon level child keys from a master private key", "[hd-derivation]") {
     GIVEN("A valid seed for a master private key") {
         const std::string seed_hex_string = "000102030405060708090a0b0c0d0e0f";
-        const auto seed = crypto_algorithms::from_hex(seed_hex_string);
+        const auto seed = walletpp::crypto_algorithms::from_hex(seed_hex_string);
         const auto master_extended_key = walletpp::master_key_generator::generate_private_key(seed);
 
-        auto keys_pair = hd_derivation::private_and_public_key_pair_derivation(*master_extended_key, 0);
+        auto keys_pair = walletpp::hd_derivation::private_and_public_key_pair_derivation(*master_extended_key, 0);
         WHEN("We derive the first level child private and public keys from the master key") {
             auto private_key = keys_pair.private_key;
             auto public_key = keys_pair.public_key;
@@ -27,7 +27,7 @@ SCENARIO("Deriving first and secon level child keys from a master private key", 
         }
 
         AND_WHEN("We derive second level keys from the first level derived private key") {
-            auto second_level_keys_pair = hd_derivation::private_and_public_key_pair_derivation(keys_pair.private_key, 0);
+            auto second_level_keys_pair = walletpp::hd_derivation::private_and_public_key_pair_derivation(keys_pair.private_key, 0);
             auto second_level_private_key = second_level_keys_pair.private_key;
             auto second_level_public_key = second_level_keys_pair.public_key;
             const auto base58_second_level_private_key = second_level_private_key.to_base58_string();

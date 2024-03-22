@@ -5,14 +5,15 @@
 #ifndef ENTROPY_H
 #define ENTROPY_H
 
-#include <vector>
 #include <botan/auto_rng.h>
+#include <vector>
 
-class entropy {
+namespace walletpp {
+    class entropy {
+    public:
+        [[nodiscard]] static Botan::secure_vector<uint8_t> generate_entropy(uint32_t byte_size);
+    };
+}// namespace walletpp
 
-public:
-    [[nodiscard]] static Botan::secure_vector<uint8_t> generate_entropy(uint32_t byte_size);
-};
 
-
-#endif //ENTROPY_H
+#endif//ENTROPY_H

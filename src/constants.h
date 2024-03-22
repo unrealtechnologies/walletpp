@@ -21,7 +21,9 @@ namespace walletpp {
     static constexpr uint8_t public_key_uncompressed_bytes_length = 65;
     static constexpr uint8_t public_key_uncompressed_form_id = 0x04;
     static constexpr size_t hardened_key_start_index = 0x80000000;
+    constexpr static uint16_t sha256_output_byte_size = 32;
     constexpr static uint16_t default_pbkdf2_iterations = 2048;
+    constexpr static uint16_t pbkdf2_sha512_output_byte_size = 64;
     static constexpr std::string_view default_mnemonic_salt_string = "mnemonic";
     static const Botan::secure_vector<uint8_t> master_key_parent_key{0x00, 0x00, 0x00, 0x00};
     typedef Botan::secure_vector<uint8_t> bytes_buffer;
