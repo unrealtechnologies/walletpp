@@ -19,7 +19,8 @@ namespace walletpp {
 
     Botan::secure_vector<uint16_t> bip39::words_index_from_entropy(const Botan::secure_vector<bool> &entropy_with_checksum) {
         if (entropy_with_checksum.size() % entropy_bits_per_word != 0) {
-            throw std::runtime_error("The number of bits is not a multiple of the bits per word.");
+            throw std::runtime_error("The number of bits is not a multiple of "
+                                     "the bits per word.");
         }
 
         const size_t num_words = entropy_with_checksum.size() / entropy_bits_per_word;
@@ -41,10 +42,9 @@ namespace walletpp {
     }
 
     std::vector<std::string_view> bip39::mnemonic_from_entropy(const Botan::secure_vector<uint8_t> &entropy) {
-        if (entropy.size() < entropy_min_length_in_bytes ||
-            entropy.size() > entropy_max_length_in_bytes ||
-            entropy.size() % sizeof(uint8_t) != 0) {
-            throw std::runtime_error("Key size should be between 128 and 256 bits AKA 16 and 32 bytes");
+        if (entropy.size() < entropy_min_length_in_bytes || entropy.size() > entropy_max_length_in_bytes || entropy.size() % sizeof(uint8_t) != 0) {
+            throw std::runtime_error("Key size should be between 128 and 256 "
+                                     "bits AKA 16 and 32 bytes");
         }
 
         size_t checksum_bits_length = entropy.size() * single_byte_bits_length / entropy_bits_multiple;
@@ -70,22 +70,22 @@ namespace walletpp {
         return words;
     }
 
-    std::array<uint8_t, pbkdf2_sha512_output_byte_size> bip39::seed_from_mnemonic(const std::vector<std::string_view> &words_vector, const std::string_view salt, const size_t number_of_pbkdf2_iterations) {
+    std::array<uint8_t, pbkdf2_sha512_output_byte_size> bip39::seed_from_mnemonic(const std::vector<std::string_view> &words_vector, const std::string_view salt,
+                                                                                  const size_t number_of_pbkdf2_iterations) {
         std::string result;
         for (auto it = words_vector.begin(); it != words_vector.end(); ++it) {
             std::string word_as_string(it->begin(), it->end());
             result += word_as_string;
 
             // If not the last element, add a space
-            if (std::next(it) != words_vector.end()) {
-                result += " ";
-            }
+            if (std::next(it) != words_vector.end()) { result += " "; }
             crypto_algorithms::secure_erase_string(word_as_string);
         }
 
         const auto seed = crypto_algorithms::fast_pbkdf2(result, salt, number_of_pbkdf2_iterations);
+
         crypto_algorithms::secure_erase_string(result);
 
         return seed;
     }
-}
+}// namespace walletpp
