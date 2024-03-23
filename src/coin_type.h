@@ -7,6 +7,7 @@
 
 #include <map>
 #include <string>
+#include <cstdint>
 
 namespace walletpp {
     class coin_type {
