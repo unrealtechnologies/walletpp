@@ -40,6 +40,10 @@ add_library(${LIB_NAME} STATIC
         src/ethereum_utils.cpp
         src/ethereum_utils.h
         src/extended_key.cpp
+        src/bip44.cpp
+        src/bip44.h
+        src/coin_type.cpp
+        src/coin_type.h
 )
 
 target_include_directories(${LIB_NAME}
