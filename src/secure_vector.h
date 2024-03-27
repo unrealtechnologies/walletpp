@@ -1,5 +1,7 @@
 //
 // Created by Ariel Saldana on 3/26/24.
+// PLEASE DO NOT USE THIS WITH A T VALUE OTHER THAN STD::STRING AND UINT8_T
+// I HAVE NOT TESTED IT WITH OTHER TYPES
 //
 
 #ifndef SECURE_VECTOR_H
@@ -40,20 +42,7 @@ namespace walletpp {
         secure_vector(InputIterator first, InputIterator last) : vec(first, last) {}
 
         // Destructor
-        ~secure_vector() {
-            if constexpr (std::is_same_v<T, std::string>) {
-                // Explicitly zero out the heap memory used by each string.
-                for (auto &str: vec) {
-                    if (!str.empty()) {
-                        std::fill(std::begin(str), std::end(str), 0);
-                        str.clear();
-                    }
-                }
-            } else {
-                std::fill_n(vec.begin(), vec.size(), 0);
-            }
-            vec.clear();
-        }
+        ~secure_vector() { secure_erase(); }
 
         // Other necessary vector operations can be delegated to vec...
         [[nodiscard]] auto size() const noexcept -> size_t { return vec.size(); }
@@ -61,20 +50,7 @@ namespace walletpp {
         T *data() noexcept { return vec.data(); }
         const T *data() const noexcept { return vec.data(); }
 
-        auto simulate_destruction() -> void {
-            if constexpr (std::is_same_v<T, std::string>) {
-                // Explicitly zero out the heap memory used by each string.
-                for (auto &str: vec) {
-                    if (!str.empty()) {
-                        std::fill(std::begin(str), std::end(str), 0);
-                        str.clear();
-                    }
-                }
-            } else {
-                std::fill_n(vec.begin(), vec.size(), 0);
-            }
-            vec.clear();
-        }
+        auto simulate_destruction() -> void { secure_erase(); }
 
         T &operator[](size_t idx) {
             if (idx >= vec.size()) throw std::out_of_range("Index out of range");
@@ -129,6 +105,26 @@ namespace walletpp {
 
     private:
         std::vector<T> vec;
+
+        void secure_erase() {
+            // Check if T is std::string, requires #include <type_traits> and <string>
+            if constexpr (std::is_same_v<T, std::string>) {
+                for (auto &str: vec) {
+                    // Using volatile pointer to attempt to prevent optimization of the write loop
+                    volatile char *p = const_cast<char *>(str.data());
+                    std::size_t len = str.size();
+                    while (len--) { *p++ = 0; }
+                    str.clear();// Deallocate the string's memory
+                }
+            } else {
+                // General case for other types
+                if (!vec.empty()) {
+                    // Note: The use of volatile is removed since memset_s should not be optimized away.
+                    memset_s(const_cast<T *>(vec.data()), vec.size() * sizeof(T), 0, vec.size() * sizeof(T));
+                }
+            }
+            vec.clear();// Clear the vector after securely erasing its content
+        }
     };
 }// namespace walletpp
 
