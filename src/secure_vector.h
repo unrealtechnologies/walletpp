@@ -33,8 +33,17 @@ namespace walletpp {
 
         // Destructor
         ~secure_vector() {
-            //Securely zero out memory
-            for (auto &item: vec) { std::memset(&item, 0, sizeof(T)); }
+            if constexpr (std::is_same_v<T, std::string>) {
+                // Explicitly zero out the heap memory used by each string.
+                for (auto &str: vec) {
+                    if (!str.empty()) {
+                        std::fill(std::begin(str), std::end(str), 0);
+                        str.clear();
+                    }
+                }
+            } else {
+                std::fill_n(vec.begin(), vec.size(), 0);
+            }
             vec.clear();
         }
 
@@ -45,8 +54,6 @@ namespace walletpp {
         const T *data() const noexcept { return vec.data(); }
 
         auto simulate_destruction() -> void {
-            // for (auto &item: vec) { std::memset(&item, 0, sizeof(T)); }
-            // vec.clear();
             if constexpr (std::is_same_v<T, std::string>) {
                 // Explicitly zero out the heap memory used by each string.
                 for (auto &str: vec) {
