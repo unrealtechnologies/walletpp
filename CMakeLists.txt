@@ -44,6 +44,8 @@ add_library(${LIB_NAME} STATIC
         src/bip44.h
         src/coin_type.cpp
         src/coin_type.h
+        src/secure_vector.cpp
+        src/secure_vector.h
 )
 
 target_include_directories(${LIB_NAME}
