@@ -4,22 +4,20 @@
 
 #include "ethereum_utils.h"
 #include "constants.h"
+#include "secure_vector.h"
+
 
 namespace walletpp {
-    std::string ethereum_utils::generate_ethereum_address(const Botan::secure_vector<uint8_t> &key) {
+    std::string ethereum_utils::generate_ethereum_address(const walletpp::secure_vector<uint8_t> &key) {
         auto pub_key = crypto_algorithms::generate_public_key(key, false);
-        if (pub_key.size() == walletpp::public_key_uncompressed_bytes_length && pub_key[0] == walletpp::public_key_uncompressed_form_id) {
-            pub_key.erase(pub_key.begin());
-        }
+        if (pub_key.size() == walletpp::public_key_uncompressed_bytes_length && pub_key[0] == walletpp::public_key_uncompressed_form_id) { pub_key.erase(pub_key.begin()); }
         auto hashed_public_key = crypto_algorithms::keccak256(pub_key);
-        Botan::secure_vector<uint8_t> last_20_bytes = {hashed_public_key.begin() + 12, hashed_public_key.end()};
+        walletpp::secure_vector<uint8_t> last_20_bytes = {hashed_public_key.begin() + 12, hashed_public_key.end()};
 
         std::string address = Botan::hex_encode(last_20_bytes);
 
         // transform the characters in the address to lowercase
-        for (int i = 0; i < address.length(); i++) {
-            address[i] = static_cast<char>(tolower(address[i]));
-        }
+        for (int i = 0; i < address.length(); i++) { address[i] = static_cast<char>(tolower(address[i])); }
 
         return to_checksum_address(address);
     }

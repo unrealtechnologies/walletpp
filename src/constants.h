@@ -5,10 +5,12 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
+#include "secure_vector.h"
 #include <botan/secmem.h>
 #include <cstddef>
 #include <cstdint>
 #include <iostream>
+
 
 namespace walletpp {
     static constexpr size_t private_key_bytes_length = 32;
@@ -25,8 +27,8 @@ namespace walletpp {
     constexpr static uint16_t default_pbkdf2_iterations = 2048;
     constexpr static uint16_t pbkdf2_sha512_output_byte_size = 64;
     static constexpr std::string_view default_mnemonic_salt_string = "mnemonic";
-    static const Botan::secure_vector<uint8_t> master_key_parent_key{0x00, 0x00, 0x00, 0x00};
-    typedef Botan::secure_vector<uint8_t> bytes_buffer;
+    static const walletpp::secure_vector<uint8_t> master_key_parent_key{0x00, 0x00, 0x00, 0x00};
+    typedef walletpp::secure_vector<uint8_t> bytes_buffer;
     typedef uint8_t byte;
 }// namespace walletpp
 

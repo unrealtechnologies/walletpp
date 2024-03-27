@@ -7,8 +7,8 @@
 #include <botan/base58.h>
 
 namespace walletpp {
-    auto extended_key::serialize() const -> Botan::secure_vector<uint8_t> {
-        Botan::secure_vector<uint8_t> serialized_key;
+    auto extended_key::serialize() const -> walletpp::secure_vector<uint8_t> {
+        walletpp::secure_vector<uint8_t> serialized_key;
         serialized_key.reserve(walletpp::serialized_extended_key_bytes_length);
 
         constexpr std::array<uint8_t, walletpp::extended_key_version_byte_length> private_version = {0x04, 0x88, 0xAD, 0xE4};
@@ -40,14 +40,14 @@ namespace walletpp {
         return base58_string;
     }
 
-    Botan::secure_vector<uint8_t> extended_key::to_base58_vector() const {
+    walletpp::secure_vector<uint8_t> extended_key::to_base58_vector() const {
         auto base58_string = to_base58_string();
-        Botan::secure_vector<uint8_t> base58_vec{base58_string.begin(), base58_string.end()};
+        walletpp::secure_vector<uint8_t> base58_vec{base58_string.begin(), base58_string.end()};
         crypto_algorithms::secure_erase_string(base58_string);
         return base58_vec;
     }
 
-    Botan::secure_vector<uint8_t> extended_key::fingerprint(const Botan::secure_vector<uint8_t> &key) {
+    walletpp::secure_vector<uint8_t> extended_key::fingerprint(const walletpp::secure_vector<uint8_t> &key) {
         auto firstSha256 = crypto_algorithms::sha256(key);
         auto full_fingerprint = crypto_algorithms::ripemd160({firstSha256.begin(), firstSha256.end()});
         return {full_fingerprint.begin(), full_fingerprint.begin() + walletpp::fingerprint_byte_length};

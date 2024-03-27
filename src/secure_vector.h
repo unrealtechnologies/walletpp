@@ -7,7 +7,6 @@
 
 
 #include <algorithm>
-#include <cstring>
 #include <vector>
 
 namespace walletpp {
@@ -86,6 +85,38 @@ namespace walletpp {
         iterator end() noexcept { return vec.end(); }
         const_iterator end() const noexcept { return vec.end(); }
         const_iterator cend() const noexcept { return vec.cend(); }
+
+        // Insert a single element at a specific position
+        iterator insert(const_iterator pos, const T &value) { return vec.insert(pos, value); }
+
+        // Insert a single element at a specific position (move version)
+        iterator insert(const_iterator pos, T &&value) { return vec.insert(pos, std::move(value)); }
+
+        // Insert elements from an initializer list at a specific position
+        iterator insert(const_iterator pos, std::initializer_list<T> ilist) { return vec.insert(pos, ilist); }
+
+        // Insert elements from a range [first, last) at a specific position
+        template<typename InputIterator>
+        iterator insert(const_iterator pos, InputIterator first, InputIterator last) {
+            return vec.insert(pos, first, last);
+        }
+
+        // Insert 'count' copies of 'value' at position 'pos'
+        iterator insert(const_iterator pos, size_t count, const T &value) { return vec.insert(pos, count, value); }
+
+        // Erase a single element at a specific position
+        iterator erase(const_iterator pos) { return vec.erase(pos); }
+
+        // Erase elements in the range [first, last)
+        iterator erase(const_iterator first, const_iterator last) { return vec.erase(first, last); }
+
+        // Request a change in capacity
+        void reserve(size_t new_cap) { vec.reserve(new_cap); }
+
+        template<typename... Args>
+        void emplace_back(Args &&...args) {
+            vec.emplace_back(std::forward<Args>(args)...);
+        }
 
     private:
         std::vector<T> vec;

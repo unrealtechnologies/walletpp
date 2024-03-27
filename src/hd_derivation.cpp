@@ -17,21 +17,21 @@ namespace walletpp {
         const auto parent_public_key = crypto_algorithms::generate_public_key(parent_key.key, true);
         const auto index_be_format = crypto_algorithms::uint32_to_big_endian_bytes(index);
 
-        Botan::secure_vector<uint8_t> output{};
+        walletpp::secure_vector<uint8_t> output{};
         if (is_hardered) {
-            Botan::secure_vector<uint8_t> p_key = {walletpp::zero_byte};
+            walletpp::secure_vector<uint8_t> p_key = {walletpp::zero_byte};
             p_key.insert(p_key.end(), parent_key.key.begin(), parent_key.key.end());
             p_key.insert(p_key.end(), index_be_format.begin(), index_be_format.end());
             output = crypto_algorithms::hmac512(p_key, parent_key.chain_code);
         } else {
-            Botan::secure_vector<uint8_t> p_key{};
+            walletpp::secure_vector<uint8_t> p_key{};
             p_key.insert(p_key.end(), parent_public_key.begin(), parent_public_key.end());
             p_key.insert(p_key.end(), index_be_format.begin(), index_be_format.end());
             output = crypto_algorithms::hmac512(p_key, parent_key.chain_code);
         }
 
-        const Botan::secure_vector<uint8_t> IL = {output.begin(), output.begin() + walletpp::private_key_bytes_length};
-        const Botan::secure_vector<uint8_t> IR = {output.begin() + walletpp::private_key_bytes_length, output.end()};
+        const walletpp::secure_vector<uint8_t> IL = {output.begin(), output.begin() + walletpp::private_key_bytes_length};
+        const walletpp::secure_vector<uint8_t> IR = {output.begin() + walletpp::private_key_bytes_length, output.end()};
 
         //The returned child key ki is parse256(IL) + kpar (mod n).
         const auto private_key = crypto_algorithms::generate_private_key(parent_key.key, IL);

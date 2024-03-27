@@ -11,7 +11,7 @@
 namespace walletpp {
     class ethereum_utils {
     public:
-        [[nodiscard]] static auto generate_ethereum_address(const Botan::secure_vector<uint8_t> &key) -> std::string;
+        [[nodiscard]] static auto generate_ethereum_address(const walletpp::secure_vector<uint8_t> &key) -> std::string;
         [[nodiscard]] static auto to_checksum_address(const std::string &address) -> std::string;
     };
 }// namespace walletpp
