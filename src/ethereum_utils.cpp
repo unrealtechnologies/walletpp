@@ -5,6 +5,7 @@
 #include "ethereum_utils.h"
 #include "constants.h"
 #include "secure_vector.h"
+#include <botan/hex.h>
 
 
 namespace walletpp {

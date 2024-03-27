@@ -6,7 +6,6 @@
 #define ETHEREUM_UTILS_H
 
 #include "crypto_algorithms.h"
-#include <botan/hex.h>
 
 namespace walletpp {
     class ethereum_utils {

@@ -6,7 +6,6 @@
 #define ENTROPY_H
 
 #include "secure_vector.h"
-#include <botan/auto_rng.h>
 #include <vector>
 
 namespace walletpp {

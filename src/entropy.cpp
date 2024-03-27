@@ -3,9 +3,10 @@
 //
 
 #include "entropy.h"
+#include <botan/auto_rng.h>
 
 namespace walletpp {
-    walletpp::secure_vector<uint8_t> entropy::generate_entropy(uint32_t byte_size) {
+    secure_vector<uint8_t> entropy::generate_entropy(uint32_t byte_size) {
         static Botan::AutoSeeded_RNG rng;
         // Generate a vector of random bytes
         walletpp::secure_vector<uint8_t> random_data(byte_size);
