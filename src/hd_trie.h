@@ -24,10 +24,11 @@ namespace walletpp {
         [[nodiscard]] auto get_path_vector_from_string(std::string_view path) const -> std::vector<std::string_view>;
 
     public:
-        explicit hd_trie(key_pair &&k_pair) : root([&]() -> std::shared_ptr<hd_node> {
-                                                       std::weak_ptr<hd_node> null_parent;
-                                                       return std::make_unique<hd_node>(std::move(k_pair), null_parent);
-                                                   }()) {}
+        explicit hd_trie(key_pair &&k_pair)
+            : root([&]() -> std::shared_ptr<hd_node> {
+                  std::weak_ptr<hd_node> null_parent;
+                  return std::make_unique<hd_node>(std::move(k_pair), null_parent);
+              }()) {}
         explicit hd_trie(const walletpp::secure_vector<uint8_t> &seed);
 
         [[nodiscard]] auto search(std::string_view path) const -> hd_node *;
