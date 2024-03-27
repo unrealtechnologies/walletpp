@@ -13,20 +13,14 @@ namespace walletpp {
         root = std::make_unique<hd_node>(std::move(*kp), std::shared_ptr<hd_node>{});
     }
 
-    hd_trie::hd_trie(const walletpp::secure_vector<uint8_t> &seed) {
-        initialize_with_seed(seed);
-    }
+    hd_trie::hd_trie(const walletpp::secure_vector<uint8_t> &seed) { initialize_with_seed(seed); }
 
     hd_node *hd_trie::search(std::string_view path) const {
-        if (path.empty()) {
-            throw std::invalid_argument("Path cannot be empty");
-        }
+        if (path.empty()) { throw std::invalid_argument("Path cannot be empty"); }
 
         auto path_list = get_path_vector_from_string(path);
         if (path_list.front() == root_identifier) {
-            if (path_list.size() == 1) {
-                return root.get();
-            }
+            if (path_list.size() == 1) { return root.get(); }
         } else {
             throw std::runtime_error("Invalid path");
         }
@@ -35,13 +29,9 @@ namespace walletpp {
     }
 
     hd_node *hd_trie::internal_search_helper(const std::vector<std::string_view> &path_vector, hd_node *curr_node, size_t depth) const {
-        if (!curr_node) {
-            throw std::invalid_argument("Current node cannot be null");
-        }
+        if (!curr_node) { throw std::invalid_argument("Current node cannot be null"); }
 
-        if (path_vector.empty()) {
-            return curr_node;
-        }
+        if (path_vector.empty()) { return curr_node; }
 
         hd_node *currnode = curr_node;
         for (size_t i = 1; i < path_vector.size(); i++) {
@@ -62,14 +52,13 @@ namespace walletpp {
     }
 
     std::vector<std::string_view> hd_trie::get_path_vector_from_string(std::string_view path) const {
-        if (path.find_first_not_of(std::string("0123456789") + std::string(root_identifier) + std::string(path_delimiter) + std::string(hardened_key_identifier)) != std::string_view::npos) {
+        if (path.find_first_not_of(std::string("0123456789") + std::string(root_identifier) + std::string(path_delimiter) + std::string(hardened_key_identifier)) !=
+            std::string_view::npos) {
             throw std::invalid_argument("Path contains invalid characters");
         }
         const std::string_view delim = path_delimiter.data();
         std::vector<std::string_view> path_vector;
-        for (auto &&word_range: std::views::split(path, delim)) {
-            path_vector.emplace_back(word_range);
-        }
+        for (auto &&word_range: std::views::split(path, delim)) { path_vector.emplace_back(word_range); }
 
         return path_vector;
     }
