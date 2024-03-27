@@ -15,6 +15,7 @@ SCENARIO("Deriving first and secon level child keys from a master private key", 
 
         auto keys_pair = walletpp::hd_derivation::private_and_public_key_pair_derivation(master_extended_key, 0);
         WHEN("We derive the first level child private and public keys from the master key") {
+
             auto private_key = keys_pair.private_key;
             auto public_key = keys_pair.public_key;
             auto base58_private_key_string = private_key.to_base58_string();

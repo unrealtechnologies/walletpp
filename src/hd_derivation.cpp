@@ -29,21 +29,22 @@ namespace walletpp {
         }
 
         const secure_vector<uint8_t> IL = {output.begin(), output.begin() + private_key_bytes_length};
-        const secure_vector<uint8_t> IR = {output.begin() + private_key_bytes_length, output.end()};
+        secure_vector<uint8_t> IR = {output.begin() + private_key_bytes_length, output.end()};
 
         //The returned child key ki is parse256(IL) + kpar (mod n).
-        const auto private_key = crypto_algorithms::generate_private_key(parent_key.key, IL);
-        const auto fingerprint = extended_key::fingerprint(parent_public_key);
-        auto extended_private_key = extended_key(private_key, IR, fingerprint, parent_key.depth + 1, index);
+        auto private_key = crypto_algorithms::generate_private_key(parent_key.key, IL);
+        auto fingerprint = extended_key::fingerprint(parent_public_key);
+        auto extended_private_key = extended_key(std::move(private_key), std::move(IR), std::move(fingerprint), parent_key.depth + 1, index);
 
         return extended_private_key;
     }
 
     auto hd_derivation::public_child_key_derivation(const extended_key &parent_key, const size_t index) noexcept -> extended_key {
         const auto private_key = private_child_key_derivation(parent_key, index);
-        const auto public_key = crypto_algorithms::generate_public_key(private_key.key, true);
-        const auto fingerprint = extended_key::fingerprint(public_key);
-        auto extended_public_key = extended_key(public_key, private_key.chain_code, fingerprint, private_key.depth + 1, index);
+        auto public_key = crypto_algorithms::generate_public_key(private_key.key, true);
+        auto copied_chain_code = private_key.chain_code;
+        auto fingerprint = extended_key::fingerprint(public_key);
+        auto extended_public_key = extended_key(std::move(public_key), std::move(copied_chain_code), std::move(fingerprint), private_key.depth + 1, index);
 
         return extended_public_key;
     }
@@ -53,9 +54,11 @@ namespace walletpp {
             throw std::runtime_error("The private key should be 256 bits, are you attempting to generate the pair with a public key?");
         }
         auto extended_private_key = private_child_key_derivation(parent_key, index);
-        const auto public_key = crypto_algorithms::generate_public_key(extended_private_key.key, true);
+        auto copied_extended_private_key_chaincode = extended_private_key.chain_code;
+        auto copied_extended_private_key_parent_finger_print = extended_private_key.parent_finger_print;
+        auto public_key = crypto_algorithms::generate_public_key(extended_private_key.key, true);
         auto extended_public_key =
-                extended_key(public_key, extended_private_key.chain_code, extended_private_key.parent_finger_print, extended_private_key.depth, extended_private_key.index);
+                extended_key(std::move(public_key), std::move(copied_extended_private_key_chaincode), std::move(copied_extended_private_key_parent_finger_print), extended_private_key.depth, extended_private_key.index);
 
         return {std::move(extended_private_key), std::move(extended_public_key)};
     }
