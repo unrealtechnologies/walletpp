@@ -13,7 +13,7 @@ SCENARIO("Deriving first and secon level child keys from a master private key", 
         const auto seed = walletpp::crypto_algorithms::from_hex(seed_hex_string);
         const auto master_extended_key = walletpp::master_key_generator::generate_private_key(seed);
 
-        auto keys_pair = walletpp::hd_derivation::private_and_public_key_pair_derivation(*master_extended_key, 0);
+        auto keys_pair = walletpp::hd_derivation::private_and_public_key_pair_derivation(master_extended_key, 0);
         WHEN("We derive the first level child private and public keys from the master key") {
             auto private_key = keys_pair.private_key;
             auto public_key = keys_pair.public_key;

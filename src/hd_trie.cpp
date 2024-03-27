@@ -9,8 +9,8 @@
 
 namespace walletpp {
     void hd_trie::initialize_with_seed(const walletpp::secure_vector<uint8_t> &seed) {
-        const auto kp = walletpp::master_key_generator::generate_master_key_pair(seed);
-        root = std::make_unique<hd_node>(std::move(*kp), std::shared_ptr<hd_node>{});
+        auto kp = walletpp::master_key_generator::generate_master_key_pair(seed);
+        root = std::make_unique<hd_node>(std::move(kp), std::shared_ptr<hd_node>{});
     }
 
     hd_trie::hd_trie(const walletpp::secure_vector<uint8_t> &seed) { initialize_with_seed(seed); }
