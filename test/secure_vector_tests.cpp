@@ -4,6 +4,7 @@
 
 
 #include "secure_vector.h"
+#include "secure_vector_imp.h"
 #include <catch2/catch_test_macros.hpp>
 #include <iostream>
 #include <string>
@@ -35,7 +36,7 @@ SCENARIO("We want to test the secure_vector class", "[secure-vector]") {
 
         THEN("When we go out of scope, the key should be erased") {
             const std::string private_key_string = "123456789";
-            walletpp::secure_vector<uint8_t> private_key{private_key_string.begin(), private_key_string.end()};
+            secure_vector_imp<uint8_t> private_key{private_key_string.begin(), private_key_string.end()};
 
             auto dat = private_key.data();
             // Simulate destruction
@@ -45,7 +46,10 @@ SCENARIO("We want to test the secure_vector class", "[secure-vector]") {
         }
 
         THEN("Test what kyran says") {
-            walletpp::secure_vector<std::string> vec{"Bacon ipsum dolor amet leberkas shankle cupim, tail short loin strip steak t-bone pork tongue shank. Ham leberkas flank beef ribs pancetta tenderloin chislic pork frankfurter salami pork loin bacon beef. Pancetta brisket ball tip, ham hock beef ribs t-bone venison short ribs shankle porchetta shank kielbasa.", "bar", "baz"};
+            secure_vector_imp<std::string> vec{
+                    "Bacon ipsum dolor amet leberkas shankle cupim, tail short loin strip steak t-bone pork tongue shank. Ham leberkas flank beef ribs pancetta tenderloin chislic "
+                    "pork frankfurter salami pork loin bacon beef. Pancetta brisket ball tip, ham hock beef ribs t-bone venison short ribs shankle porchetta shank kielbasa.",
+                    "bar", "baz"};
             char *p = vec[0].data();
 
             auto dat = vec.data();

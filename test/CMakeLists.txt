@@ -17,6 +17,7 @@ add_executable(walletpp_tests
         hd_derivation_tests.cpp
         hd_trie_tests.cpp
         secure_vector_tests.cpp
+        secure_vector_imp.h
 )
 target_include_directories(walletpp_tests PUBLIC
         ${PROJECT_SOURCE_DIR}/include

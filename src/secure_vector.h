@@ -50,8 +50,6 @@ namespace walletpp {
         T *data() noexcept { return vec.data(); }
         const T *data() const noexcept { return vec.data(); }
 
-        auto simulate_destruction() -> void { secure_erase(); }
-
         T &operator[](size_t idx) {
             if (idx >= vec.size()) throw std::out_of_range("Index out of range");
             return vec[idx];
@@ -106,6 +104,7 @@ namespace walletpp {
     private:
         std::vector<T> vec;
 
+    protected:
         void secure_erase() {
             // Check if T is std::string, requires #include <type_traits> and <string>
             if constexpr (std::is_same_v<T, std::string>) {
