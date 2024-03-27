@@ -5,9 +5,9 @@
 #ifndef COIN_TYPE_H
 #define COIN_TYPE_H
 
+#include <cstdint>
 #include <map>
 #include <string>
-#include <cstdint>
 
 namespace walletpp {
     class coin_type {

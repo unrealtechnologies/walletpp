@@ -13,15 +13,11 @@ namespace walletpp {
         secp256k1_context_randomize(ctx, entropy::generate_entropy(32).data());
     }
 
-    secp256k1_context *secp256k1_context_singleton::get_secp256k1_context() const {
-        return ctx;
-    }
+    secp256k1_context *secp256k1_context_singleton::get_secp256k1_context() const { return ctx; }
 
     secp256k1_context_singleton &secp256k1_context_singleton::get_instance() {
         std::lock_guard lock(mutex);
         static secp256k1_context_singleton instance;
         return instance;
     }
-}
-
-
+}// namespace walletpp

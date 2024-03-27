@@ -2,8 +2,8 @@
 // Created by ariel on 3/9/24.
 //
 
-#include "secure_vector.h"
 #include "bip39.h"
+#include "secure_vector.h"
 #include "wordlist.h"
 
 namespace walletpp {

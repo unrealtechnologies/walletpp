@@ -27,12 +27,12 @@ namespace walletpp {
         explicit secure_vector(size_t size) : vec(size) {}
 
         // Explicitly defined copy constructor
-        secure_vector(const secure_vector& other) : vec(other.vec) {}
+        secure_vector(const secure_vector &other) : vec(other.vec) {}
 
         // Move constructor
-        secure_vector(secure_vector&& other) noexcept : vec(std::move(other.vec)) {}
+        secure_vector(secure_vector &&other) noexcept : vec(std::move(other.vec)) {}
 
-        secure_vector& operator=(const secure_vector& other) = default;
+        secure_vector &operator=(const secure_vector &other) = default;
 
 
         // Range constructor

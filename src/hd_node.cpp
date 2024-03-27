@@ -24,12 +24,8 @@ namespace walletpp {
     }
 
     auto hd_node::remove_child(const size_t index) -> void {
-        if (const auto it = children.find(index); it != children.end()) {
-            children.erase(it);
-        }
+        if (const auto it = children.find(index); it != children.end()) { children.erase(it); }
     }
 
-    auto hd_node::get_key_pair() const -> key_pair {
-        return k_pair;
-    }
+    auto hd_node::get_key_pair() const -> key_pair { return k_pair; }
 }// namespace walletpp

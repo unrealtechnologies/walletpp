@@ -20,11 +20,8 @@ namespace walletpp {
 
     auto master_key_generator::generate_public_key(const extended_key &master_private_extended_key) -> extended_key {
         auto public_key = crypto_algorithms::generate_public_key(master_private_extended_key.key, true);
-        auto extended_master_public_key = extended_key(
-                public_key,
-                master_private_extended_key.chain_code,
-                master_private_extended_key.parent_finger_print,
-                master_private_extended_key.depth, master_private_extended_key.index);
+        auto extended_master_public_key = extended_key(public_key, master_private_extended_key.chain_code, master_private_extended_key.parent_finger_print,
+                                                       master_private_extended_key.depth, master_private_extended_key.index);
 
         return extended_master_public_key;
     }

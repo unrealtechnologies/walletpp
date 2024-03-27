@@ -24,9 +24,7 @@ namespace walletpp {
         auto index_be_format = crypto_algorithms::uint32_to_big_endian_bytes(index);
         serialized_key.insert(serialized_key.end(), index_be_format.begin(), index_be_format.end());
         serialized_key.insert(serialized_key.end(), chain_code.begin(), chain_code.end());
-        if (key.size() == private_key_bytes_length) {
-            serialized_key.emplace_back(zero_byte);
-        }
+        if (key.size() == private_key_bytes_length) { serialized_key.emplace_back(zero_byte); }
         serialized_key.insert(serialized_key.end(), key.begin(), key.end());
         auto checksum = crypto_algorithms::double_sha256(serialized_key);
         serialized_key.insert(serialized_key.end(), checksum.begin(), checksum.begin() + 4);
@@ -52,4 +50,4 @@ namespace walletpp {
         auto full_fingerprint = crypto_algorithms::ripemd160({firstSha256.begin(), firstSha256.end()});
         return {full_fingerprint.begin(), full_fingerprint.begin() + fingerprint_byte_length};
     }
-}
+}// namespace walletpp

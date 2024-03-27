@@ -57,14 +57,14 @@ namespace walletpp {
         hash->update(contents);
         auto ret_hash = hash->final();
 
-        return { ret_hash.begin(), ret_hash.end() };
+        return {ret_hash.begin(), ret_hash.end()};
     }
     walletpp::secure_vector<uint8_t> crypto_algorithms::keccak256(const walletpp::secure_vector<uint8_t> &contents) {
         const auto hash = Botan::HashFunction::create_or_throw("Keccak-1600(256)");
         hash->update(contents);
         auto ret_hash = hash->final();
 
-        return { ret_hash.begin(), ret_hash.end() };
+        return {ret_hash.begin(), ret_hash.end()};
     }
 
     walletpp::secure_vector<uint8_t> crypto_algorithms::keccak256(const std::string &contents) {
@@ -72,7 +72,7 @@ namespace walletpp {
         hash->update(contents);
         auto ret_hash = hash->final();
 
-        return { ret_hash.begin(), ret_hash.end() };
+        return {ret_hash.begin(), ret_hash.end()};
     }
 
     std::string crypto_algorithms::to_hex(const std::span<uint8_t> &contents) { return Botan::hex_encode(contents); }
