@@ -11,6 +11,7 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 include(${CMAKE_CURRENT_LIST_DIR}/cmake/secp256k1.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/cmake/botan.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/cmake/fastpbkdf2.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/cmake/csprng.cmake)
 
 add_library(${LIB_NAME} STATIC
         include/walletpp.h
@@ -67,6 +68,7 @@ target_link_libraries(${LIB_NAME}
         OpenSSL::SSL
         OpenSSL::Crypto
         fastpbkdf2
+        csprng
 )
 
 option(BUILD_TESTS "Build tests" OFF)
