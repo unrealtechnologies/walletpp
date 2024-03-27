@@ -16,8 +16,8 @@ namespace walletpp {
         auto active_version = (key.size() == walletpp::private_key_bytes_length) ? private_version : public_version;
         serialized_key.insert(serialized_key.end(), active_version.begin(), active_version.end());
         serialized_key.insert(serialized_key.end(), depth);
-        if (parent_finger_print.has_value()) {
-            serialized_key.insert(serialized_key.end(), parent_finger_print.value().begin(), parent_finger_print.value().end());
+        if (parent_finger_print.size() > 0) {
+            serialized_key.insert(serialized_key.end(), parent_finger_print.begin(), parent_finger_print.end());
         } else {
             serialized_key.insert(serialized_key.end(), walletpp::master_key_parent_key.begin(), walletpp::master_key_parent_key.end());
         }

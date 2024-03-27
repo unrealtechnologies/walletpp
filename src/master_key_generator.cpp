@@ -12,8 +12,8 @@ namespace walletpp {
 
         walletpp::secure_vector<uint8_t> m_key = {hash_output.begin(), hash_output.begin() + private_key_bytes_length};
         walletpp::secure_vector<uint8_t> m_chaincode = {hash_output.begin() + chaincode_byte_length, hash_output.end()};
-        std::optional<walletpp::secure_vector<uint8_t>> parent_finger_print = std::nullopt;
-        auto extended_master_key = std::make_unique<extended_key>(m_key, m_chaincode, parent_finger_print, zero_byte, zero_byte);
+        auto empty_vec = secure_vector<uint8_t>();
+        auto extended_master_key = std::make_unique<extended_key>(m_key, m_chaincode, empty_vec, zero_byte, zero_byte);
 
         return extended_master_key;
     }

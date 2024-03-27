@@ -13,7 +13,7 @@ namespace walletpp {
     struct extended_key {
         const walletpp::secure_vector<uint8_t> key;
         const walletpp::secure_vector<uint8_t> chain_code;
-        const std::optional<walletpp::secure_vector<uint8_t>> parent_finger_print;
+        const walletpp::secure_vector<uint8_t> parent_finger_print;
         const uint8_t depth;
         const uint32_t index;
         const bool is_private_key;
@@ -21,7 +21,7 @@ namespace walletpp {
         extended_key(
                 const walletpp::secure_vector<uint8_t> &key,
                 const walletpp::secure_vector<uint8_t> &chain_code,
-                const std::optional<walletpp::secure_vector<uint8_t>> &parent_finger_print,
+                const walletpp::secure_vector<uint8_t> &parent_finger_print,
                 const uint8_t depth,
                 const uint64_t index)
             : key(key),
