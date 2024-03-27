@@ -16,13 +16,9 @@ namespace walletpp {
         std::weak_ptr<hd_node> parent;
 
     public:
-        // explicit hd_node(key_pair k_pair, std::weak_ptr<hd_node> parent) : k_pair(std::move(k_pair)), parent(std::move(parent)) {}
+        // this constructor explicitly only allows for moving key_pair
         explicit hd_node(key_pair &&k_pair, std::weak_ptr<hd_node> parent)
                 : k_pair(std::move(k_pair)), parent(std::move(parent)) {}
-
-        //hd_node(node, std::move(myKeyPair), parentNode);
-        //hd_node(node, myKeyPair, parentNode);
-
 
         hd_node *derive_child(size_t index);
         auto remove_child(size_t index) -> void;
