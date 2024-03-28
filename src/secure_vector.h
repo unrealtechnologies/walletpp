@@ -123,7 +123,7 @@ namespace walletpp {
                 // General case for other types
                 if (!vec.empty()) {
                     // Note: The use of volatile is removed since memset_s should not be optimized away.
-                    memset_s(const_cast<T *>(vec.data()), vec.size() * sizeof(T), 0, vec.size() * sizeof(T));
+                    std::fill_n(vec.data(), vec.size(), 0);
                 }
             }
             vec.clear();// Clear the vector after securely erasing its content
