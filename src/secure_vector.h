@@ -11,7 +11,7 @@
 #include <algorithm>
 #include <vector>
 #include <stdexcept>
-#include <cstring>
+#include <string.h>
 
 namespace walletpp {
     template<typename T>
