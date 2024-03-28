@@ -10,6 +10,7 @@
 
 #include <algorithm>
 #include <vector>
+#include <stdexcept>
 
 namespace walletpp {
     template<typename T>
