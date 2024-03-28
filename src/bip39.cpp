@@ -5,7 +5,6 @@
 #include "bip39.h"
 #include "secure_vector.h"
 #include "wordlist.h"
-#include <array>
 #include <optional>
 
 namespace walletpp {
