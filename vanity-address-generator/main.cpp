@@ -6,7 +6,6 @@
 #include "bip44.h"
 #include "entropy.h"
 #include "ethereum_utils.h"
-#include <botan/hex.h>
 #include <fstream>
 #include <thread>
 #include <vector>
@@ -92,7 +91,7 @@ void findAddress(unsigned int start, unsigned int step, const std::string &file)
             std::ofstream outfile;
             outfile.open(format_file_name(file, start), std::ios_base::app);
             outfile << key_pair.private_key.to_base58_string() << std::endl;
-            outfile << Botan::hex_encode(key_pair.private_key.key) << std::endl;
+            outfile << crypto_algorithms::to_hex(key_pair.private_key.key) << std::endl;
             outfile << worr_stream << std::endl;
             outfile << address << std::endl;
             outfile << std::endl;

@@ -7,6 +7,7 @@
 #include "secp256k1.h"
 #include "secp256k1_context_singleton.h"
 #include "secure_vector.h"
+
 #include <cassert>
 #include <openssl/hmac.h>
 
@@ -121,9 +122,9 @@ namespace walletpp {
         return bytes;
     }
 
-    std::array<uint8_t, pbkdf2_sha512_output_byte_size> crypto_algorithms::fast_pbkdf2(const std::string_view password, const std::string_view salt, const size_t iterations) {
-        std::array<uint8_t, pbkdf2_sha512_output_byte_size> out{};
-
+    secure_vector<uint8_t> crypto_algorithms::fast_pbkdf2(const std::string_view password, const std::string_view salt, const size_t iterations) {
+        size_t key_length = pbkdf2_sha512_output_byte_size;
+        secure_vector<uint8_t> out(key_length);
         fastpbkdf2_hmac_sha512(reinterpret_cast<const uint8_t *>(password.data()), password.size(), reinterpret_cast<const uint8_t *>(salt.data()), salt.size(), iterations,
                                out.data(), out.size());
 

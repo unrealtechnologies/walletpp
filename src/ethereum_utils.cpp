@@ -5,8 +5,6 @@
 #include "ethereum_utils.h"
 #include "constants.h"
 #include "secure_vector.h"
-#include <botan/hex.h>
-
 
 namespace walletpp {
     std::string ethereum_utils::generate_ethereum_address(const walletpp::secure_vector<uint8_t> &key) {
@@ -15,7 +13,7 @@ namespace walletpp {
         auto hashed_public_key = crypto_algorithms::keccak256(pub_key);
         walletpp::secure_vector<uint8_t> last_20_bytes = {hashed_public_key.begin() + 12, hashed_public_key.end()};
 
-        std::string address = Botan::hex_encode(last_20_bytes);
+        std::string address = crypto_algorithms::to_hex(last_20_bytes);
 
         // transform the characters in the address to lowercase
         for (int i = 0; i < address.length(); i++) { address[i] = static_cast<char>(tolower(address[i])); }
@@ -25,7 +23,7 @@ namespace walletpp {
 
     std::string ethereum_utils::to_checksum_address(const std::string &address) {
         std::string checksum_address;
-        std::string hash = Botan::hex_encode(crypto_algorithms::keccak256(address));
+        std::string hash = crypto_algorithms::to_hex(crypto_algorithms::keccak256(address));
 
         for (size_t i = 0; i < address.size(); ++i) {
             if (hash[i] >= '8') {

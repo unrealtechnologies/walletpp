@@ -4,7 +4,6 @@
 
 #include "extended_key.h"
 #include <array>
-#include <botan/base58.h>
 
 namespace walletpp {
     auto extended_key::serialize() const -> secure_vector<uint8_t> {

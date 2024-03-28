@@ -5,9 +5,11 @@
 #include "bip39.h"
 #include "secure_vector.h"
 #include "wordlist.h"
+#include <array>
+#include <optional>
 
 namespace walletpp {
-    walletpp::secure_vector<uint8_t> bip39::checksum_from_entropy(const walletpp::secure_vector<uint8_t> &entropy) {
+    secure_vector<uint8_t> bip39::checksum_from_entropy(const walletpp::secure_vector<uint8_t> &entropy) {
         const auto checksum_full = crypto_algorithms::sha256(entropy);
         return {checksum_full.begin(), checksum_full.end()};
     }
@@ -18,14 +20,14 @@ namespace walletpp {
         return bits;
     }
 
-    Botan::secure_vector<uint16_t> bip39::words_index_from_entropy(const Botan::secure_vector<bool> &entropy_with_checksum) {
+    secure_vector<uint16_t> bip39::words_index_from_entropy(const secure_vector<uint8_t> &entropy_with_checksum) {
         if (entropy_with_checksum.size() % entropy_bits_per_word != 0) {
             throw std::runtime_error("The number of bits is not a multiple of "
                                      "the bits per word.");
         }
 
         const size_t num_words = entropy_with_checksum.size() / entropy_bits_per_word;
-        Botan::secure_vector<uint16_t> words_index;
+        secure_vector<uint16_t> words_index;
         words_index.reserve(num_words);
 
         for (size_t i = 0; i < num_words; ++i) {
@@ -54,7 +56,7 @@ namespace walletpp {
         const auto checksum_bits = crypto_algorithms::binary_from_bytes(checksum, checksum_bits_length);
 
         // combine the initial entropy with the checksum
-        Botan::secure_vector<bool> entropy_with_checksum_bits;
+        secure_vector<uint8_t> entropy_with_checksum_bits;
         entropy_with_checksum_bits.reserve(entropy.size() + checksum.size());
         entropy_with_checksum_bits.insert(entropy_with_checksum_bits.end(), entropy_bits.begin(), entropy_bits.end());
         entropy_with_checksum_bits.insert(entropy_with_checksum_bits.end(), checksum_bits.begin(), checksum_bits.end());
@@ -71,7 +73,7 @@ namespace walletpp {
         return words;
     }
 
-    std::array<uint8_t, pbkdf2_sha512_output_byte_size> bip39::seed_from_mnemonic(const std::vector<std::string_view> &words_vector, const std::string_view salt,
+    secure_vector<uint8_t> bip39::seed_from_mnemonic(const std::vector<std::string_view> &words_vector, const std::string_view salt,
                                                                                   const size_t number_of_pbkdf2_iterations) {
         std::string result;
         for (auto it = words_vector.begin(); it != words_vector.end(); ++it) {
@@ -84,7 +86,6 @@ namespace walletpp {
         }
 
         const auto seed = crypto_algorithms::fast_pbkdf2(result, salt, number_of_pbkdf2_iterations);
-
         crypto_algorithms::secure_erase_string(result);
 
         return seed;

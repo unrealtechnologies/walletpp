@@ -7,8 +7,6 @@
 #include "hd_derivation.h"
 
 
-#include <botan/hash.h>
-#include <botan/secmem.h>
 #include <string>
 
 SCENARIO("BIP32 generates master key") {

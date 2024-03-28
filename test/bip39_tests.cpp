@@ -5,9 +5,10 @@
 #include "bip39.h"
 #include "crypto_algorithms.h"
 #include "entropy.h"
+
+#include <array>
 #include <catch2/catch_test_macros.hpp>
 #include <string>
-#include <botan/hex.h>
 
 TEST_CASE("Bip39 seems fine", "[generateMnemonicFromEntropy]") {
     const auto random_entropy = walletpp::entropy::generate_entropy(32);
@@ -50,7 +51,7 @@ SCENARIO("BIP39 Generates mnemonic words", "[bip39-checksum]") {
             const auto words = walletpp::bip39::mnemonic_from_entropy(entropy);
             const auto checksum_word = words[words.size() - 1];
             const auto seed_bytes = walletpp::bip39::seed_from_mnemonic(words);
-            const auto seed_hex = Botan::hex_encode(seed_bytes);
+            const auto seed_hex = walletpp::crypto_algorithms::to_hex(seed_bytes);
             const auto correct_seed_hex = "5EB00BBDDCF069084889A8AB9155568165F5C453CCB85E70811AAED6F6DA5FC19A5AC40B389CD370D086206DEC8AA6C43DAEA6690F20AD3D8D48B2D2CE9E38E4";
 
             THEN("The seed hex value should be correct") {

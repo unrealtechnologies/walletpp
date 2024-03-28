@@ -7,7 +7,7 @@
 
 #include "constants.h"
 #include "secure_vector.h"
-#include <botan/hash.h>
+#include <optional>
 #include <string>
 #include <vector>
 
@@ -19,12 +19,9 @@ namespace walletpp {
         [[nodiscard]] static secure_vector<uint8_t> ripemd160(const secure_vector<uint8_t> &contents);
         [[nodiscard]] static secure_vector<uint8_t> keccak256(const secure_vector<uint8_t> &contents);
         [[nodiscard]] static auto keccak256(const std::string &contents) -> secure_vector<uint8_t>;
-        // [[nodiscard]] static std::string to_hex(const std::span<uint8_t> &contents);
-        // [[nodiscard]] static std::string to_hex(const std::span<uint8_t> &contents);
-        [[nodiscard]] static std::string to_hex(const secure_vector<uint8_t>& v);
+        [[nodiscard]] static std::string to_hex(const secure_vector<uint8_t> &v);
         [[nodiscard]] static secure_vector<uint8_t> from_hex(const std::string &hex_string);
-        // [[nodiscard]] static secure_vector<uint8_t> from_hex(const std::string &hex_string);
-        [[nodiscard]] static std::array<uint8_t, pbkdf2_sha512_output_byte_size> fast_pbkdf2(const std::string_view password, const std::string_view salt,
+        [[nodiscard]] static secure_vector<uint8_t> fast_pbkdf2(const std::string_view password, const std::string_view salt,
                                                                                              const size_t iterations = default_pbkdf2_iterations);
         [[nodiscard]] static secure_vector<uint8_t> binary_from_bytes(const secure_vector<uint8_t> &bytes, const std::optional<size_t> &num_of_bits);
         [[nodiscard]] static secure_vector<uint8_t> hmac512(const secure_vector<uint8_t> &msg, const secure_vector<uint8_t> &key);

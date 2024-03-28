@@ -22,8 +22,8 @@ namespace walletpp {
         auto public_key = crypto_algorithms::generate_public_key(master_private_extended_key.key, true);
         auto copy_of_chaincode = master_private_extended_key.chain_code;
         auto copy_of_fingerprint = master_private_extended_key.parent_finger_print;
-        auto extended_master_public_key = extended_key(std::move(public_key), std::move(copy_of_chaincode), std::move(copy_of_fingerprint),
-                                                       master_private_extended_key.depth, master_private_extended_key.index);
+        auto extended_master_public_key = extended_key(std::move(public_key), std::move(copy_of_chaincode), std::move(copy_of_fingerprint), master_private_extended_key.depth,
+                                                       master_private_extended_key.index);
 
         return extended_master_public_key;
     }

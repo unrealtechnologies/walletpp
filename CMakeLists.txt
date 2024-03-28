@@ -9,7 +9,6 @@ set(CMAKE_CXX_FLAGS_DEBUG "-g")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
 include(${CMAKE_CURRENT_LIST_DIR}/cmake/secp256k1.cmake)
-include(${CMAKE_CURRENT_LIST_DIR}/cmake/botan.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/cmake/fastpbkdf2.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/cmake/csprng.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/cmake/picosha2.cmake)
@@ -69,7 +68,6 @@ message(OPENSSL${OPENSSL_INCLUDE_DIR})
 target_link_libraries(${LIB_NAME}
         PUBLIC
         secp256k1
-        Botan::botan
         OpenSSL::SSL
         OpenSSL::Crypto
         fastpbkdf2
