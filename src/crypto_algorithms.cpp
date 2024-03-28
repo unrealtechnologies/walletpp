@@ -7,10 +7,10 @@
 #include "secp256k1.h"
 #include "secp256k1_context_singleton.h"
 #include "secure_vector.h"
-
 #include <cassert>
-#include <openssl/hmac.h>
+#include <cstring>
 #include <memory>
+#include <openssl/hmac.h>
 
 #ifdef __cplusplus
 extern "C" {
