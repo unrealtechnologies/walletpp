@@ -6,7 +6,8 @@ set(LIB_NAME walletpp)
 
 set(CMAKE_CXX_FLAGS "-Wall -Wextra")
 set(CMAKE_CXX_FLAGS_DEBUG "-g")
-set(CMAKE_CXX_FLAGS_RELEASE "-O3")
+set(CMAKE_C_FLAGS_RELEASE "-O3")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Ofast -funroll-loops -flto -march=native -ffast-math")
 
 include(${CMAKE_CURRENT_LIST_DIR}/cmake/secp256k1.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/cmake/fastpbkdf2.cmake)
@@ -89,7 +90,7 @@ if (BUILD_VANITY_PROJECT)
     target_link_libraries(vanity_address_generator PUBLIC ${LIB_NAME})
 endif ()
 
-option(BUILD_BENCH_PROJECT "Build bench project" ON)
+option(BUILD_BENCH_PROJECT "Build bench project" OFF)
 if (BUILD_BENCH_PROJECT)
     add_subdirectory(bench)
     target_link_libraries(walletpp_bench PUBLIC ${LIB_NAME})
