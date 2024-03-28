@@ -33,14 +33,7 @@ namespace walletpp {
         [[nodiscard]] static secure_vector<uint8_t> uint32_to_big_endian_bytes(uint32_t value);
         [[nodiscard]] static auto base58_encode_to_string(secure_vector<uint8_t> data) -> std::string;
         [[nodiscard]] static auto base58_decode_to_vector(const std::string &base58_string) -> secure_vector<uint8_t>;
-
-        template<std::size_t SIZE>
-        static void secure_erase_array(std::array<uint8_t, SIZE> &arr) {
-            std::ranges::fill(arr, 0);
-        }
-
         static void secure_erase_vector(std::vector<uint8_t> &vec) { std::ranges::fill(vec, 0); }
-
         static void secure_erase_string(std::string &str) {
             std::ranges::fill(str, 0);
             str.clear();
