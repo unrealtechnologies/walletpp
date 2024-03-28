@@ -37,9 +37,8 @@ namespace walletpp {
 
     // Global map to hold the associations
     inline std::map<coins, coin_type> coin_map = create_coin_map();
-
     // Function to get a coin_type instance by coins
-    static coin_type get_coin_type(const coins id) { return coin_map[id]; }
+    [[nodiscard]] static auto get_coin_type(const coins id) -> coin_type { return coin_map[id]; }
 }// namespace walletpp
 
 
