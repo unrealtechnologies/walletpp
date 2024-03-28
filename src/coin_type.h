@@ -18,7 +18,7 @@ namespace walletpp {
 
     public:
         coin_type() = default;
-        coin_type(int value, uint8_t path_component, std::string symbol, std::string name)
+        coin_type(int value, size_t path_component, std::string symbol, std::string name)
             : value(value), path_component(path_component), symbol(std::move(symbol)), name(std::move(name)) {}
 
         [[nodiscard]] auto get_value() const -> int { return value; }
