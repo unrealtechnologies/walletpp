@@ -10,14 +10,13 @@
 
 #include <cassert>
 #include <openssl/hmac.h>
+#include <memory>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 #include "fastpbkdf2/fastpbkdf2.h"
-#include "keccak256.h"
 #include "libbase58.h"
-#include "sha2.h"
 #include "sha3.h"
 #ifdef __cplusplus
 }

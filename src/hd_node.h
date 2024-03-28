@@ -8,6 +8,7 @@
 #include "key_pair.h"
 #include <unordered_map>
 #include <utility>
+#include <memory>
 
 namespace walletpp {
     class hd_node : public std::enable_shared_from_this<hd_node> {

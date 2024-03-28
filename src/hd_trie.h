@@ -9,6 +9,7 @@
 #include "master_key_generator.h"
 #include <ranges>
 #include <vector>
+#include <memory>
 
 namespace walletpp {
     class hd_trie {
