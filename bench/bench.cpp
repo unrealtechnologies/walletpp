@@ -3,6 +3,7 @@
 //
 
 #include "address_generation_bench.h"
+#include "address_generation_multicore_bench.h"
 #include <chrono>
 #include <functional>
 #include <iostream>
@@ -21,6 +22,7 @@ auto bench_this(const std::function<void()> &bench_func) -> void {
 int main() {
     // bench_this(sha256_bench::bench);
     // bench_this(keccak256::bench);
-    bench_this(address_generation_bench::benchmark);
+    // bench_this(address_generation_bench::benchmark);
+    bench_this(address_generation_multicore_bench::benchmark);
     return 0;
 }
