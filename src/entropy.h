@@ -7,11 +7,12 @@
 
 #include "secure_vector.h"
 #include <vector>
+#include <cstdint>
 
 namespace walletpp {
     class entropy {
     public:
-        [[nodiscard]] static secure_vector<uint8_t> generate_entropy(uint32_t byte_size);
+        [[nodiscard]] static secure_vector<uint8_t> generate_entropy(size_t byte_size);
     };
 }// namespace walletpp
 
