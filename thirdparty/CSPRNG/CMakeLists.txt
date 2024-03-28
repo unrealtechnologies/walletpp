@@ -48,14 +48,7 @@ set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE ${LIBDIR})
 
 include_directories (source)
 
-if (${LINKAGE} MATCHES "direct")
-  add_executable (c-example-${LINKAGE}   ./example.c   ./source/csprng.c)
-  add_executable (cpp-example-${LINKAGE} ./example.cpp ./source/csprng.cpp)
-endif (${LINKAGE} MATCHES "direct")
-
 if (${LINKAGE} MATCHES "static")
-  add_executable (c-example-${LINKAGE}   ./example.c  )
-  add_executable (cpp-example-${LINKAGE} ./example.cpp)
   add_library (csprng STATIC ./source/csprng.c)
 endif (${LINKAGE} MATCHES "static")
 
@@ -63,11 +56,5 @@ if (NOT ${LINKAGE} MATCHES "direct")
   if (NOT ${ARCH} EQUAL "0")
     set_target_properties (csprng PROPERTIES COMPILE_FLAGS ${ARCH} LINK_FLAGS ${ARCH})
   endif (NOT ${ARCH} EQUAL "0")
-  target_link_libraries (c-example-${LINKAGE}   csprng)
-  target_link_libraries (cpp-example-${LINKAGE} csprng)
 endif (NOT ${LINKAGE} MATCHES "direct")
 
-if (NOT ${ARCH} EQUAL "0")
-  set_target_properties (c-example-${LINKAGE}   PROPERTIES COMPILE_FLAGS ${ARCH} LINK_FLAGS ${ARCH})
-  set_target_properties (cpp-example-${LINKAGE} PROPERTIES COMPILE_FLAGS ${ARCH} LINK_FLAGS ${ARCH})
-endif (NOT ${ARCH} EQUAL "0")
