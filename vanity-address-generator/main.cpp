@@ -6,6 +6,7 @@
 #include "bip44.h"
 #include "entropy.h"
 #include "ethereum_utils.h"
+#include <botan/hex.h>
 #include <fstream>
 #include <thread>
 #include <vector>

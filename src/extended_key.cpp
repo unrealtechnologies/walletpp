@@ -34,8 +34,7 @@ namespace walletpp {
 
     std::string extended_key::to_base58_string() const {
         auto serialized_buff = serialize();
-        auto base58_string = Botan::base58_encode(serialized_buff);
-        return base58_string;
+        return crypto_algorithms::base58_encode_to_string(serialize());
     }
 
     secure_vector<uint8_t> extended_key::to_base58_vector() const {

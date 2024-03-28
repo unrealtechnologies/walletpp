@@ -3,85 +3,122 @@
 //
 
 #include "crypto_algorithms.h"
+#include "picosha2.h"
 #include "secp256k1.h"
 #include "secp256k1_context_singleton.h"
-
 #include "secure_vector.h"
-#include <botan/auto_rng.h>
-#include <botan/base58.h>
-#include <botan/hex.h>
-#include <botan/mac.h>
-#include <botan/pwdhash.h>
 #include <cassert>
 #include <openssl/hmac.h>
-#include <openssl/sha.h>
-
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 #include "fastpbkdf2/fastpbkdf2.h"
+#include "keccak256.h"
+#include "libbase58.h"
+#include "sha2.h"
+#include "sha3.h"
 #ifdef __cplusplus
 }
 #endif
 
+#include <openssl/evp.h>
+#include <openssl/sha.h>
+
 namespace walletpp {
-    std::array<uint8_t, sha256_output_byte_size> crypto_algorithms::sha256(const walletpp::secure_vector<uint8_t> &contents) {
-        const auto hash1 = Botan::HashFunction::create_or_throw("SHA-256");
-        hash1->update(contents.data(), contents.size());
-        auto hash = hash1->final();
-        walletpp::secure_vector<uint8_t> secure_msg = {hash.begin(), hash.end()};
+    secure_vector<uint8_t> crypto_algorithms::sha256(const secure_vector<uint8_t> &contents) {
+        EVP_MD_CTX *ctx;
+        unsigned char digest[EVP_MAX_MD_SIZE];
+        unsigned int digest_len;
 
-        // Initialize std::array and copy the std::vector
-        std::array<uint8_t, sha256_output_byte_size> arrayData{};
-        std::ranges::copy(secure_msg, arrayData.begin());
+        if ((ctx = EVP_MD_CTX_new()) == nullptr) throw std::runtime_error("Failed to create new EVP_MD_CTX");
 
-        return arrayData;
+        if (EVP_DigestInit_ex(ctx, EVP_sha256(), nullptr) != 1) throw std::runtime_error("Failed to initialize digest");
+
+        if (EVP_DigestUpdate(ctx, contents.data(), contents.size()) != 1) throw std::runtime_error("Failed to update digest");
+
+        if (EVP_DigestFinal_ex(ctx, digest, &digest_len) != 1) throw std::runtime_error("Failed to finalize digest");
+
+        EVP_MD_CTX_free(ctx);
+
+        secure_vector<uint8_t> digest_vector(digest, digest + digest_len);
+        return {digest_vector.begin(), digest_vector.end()};
     }
-    std::array<uint8_t, sha256_output_byte_size> crypto_algorithms::double_sha256(const walletpp::secure_vector<uint8_t> &contents) {
-        const auto hash1 = Botan::HashFunction::create_or_throw("SHA-256");
-        const auto hash2 = Botan::HashFunction::create_or_throw("SHA-256");
-        hash1->update(contents.data(), contents.size());
-        auto first_hash_data = hash1->final();
-        hash2->update(first_hash_data.data(), first_hash_data.size());
-        auto second_hash_data = hash2->final();
+    secure_vector<uint8_t> crypto_algorithms::double_sha256(const secure_vector<uint8_t> &contents) { return (sha256(sha256(contents))); }
 
-        std::array<uint8_t, sha256_output_byte_size> arrayData{};
-        std::ranges::copy(second_hash_data, arrayData.begin());
+    secure_vector<uint8_t> crypto_algorithms::ripemd160(const secure_vector<uint8_t> &contents) {
+        EVP_MD_CTX *mdctx;
+        unsigned char md_value[EVP_MAX_MD_SIZE];
+        unsigned int md_len;
 
-        return arrayData;
+        if ((mdctx = EVP_MD_CTX_new()) == nullptr) { throw std::runtime_error("Failed to create new EVP_MD_CTX"); }
+
+        if (1 != EVP_DigestInit_ex(mdctx, EVP_ripemd160(), nullptr)) {
+            EVP_MD_CTX_free(mdctx);
+            throw std::runtime_error("Failed to initialize digest");
+        }
+
+        if (1 != EVP_DigestUpdate(mdctx, contents.data(), contents.size())) {
+            EVP_MD_CTX_free(mdctx);
+            throw std::runtime_error("Failed to update digest");
+        }
+
+        if (1 != EVP_DigestFinal_ex(mdctx, md_value, &md_len)) {
+            EVP_MD_CTX_free(mdctx);
+            throw std::runtime_error("Failed to finalize digest");
+        }
+
+        EVP_MD_CTX_free(mdctx);
+
+        secure_vector<uint8_t> digest_vector(md_value, md_value + md_len);
+        return digest_vector;
     }
 
-    walletpp::secure_vector<uint8_t> crypto_algorithms::ripemd160(const walletpp::secure_vector<uint8_t> &contents) {
-        const auto hash = Botan::HashFunction::create_or_throw("RIPEMD-160");
-        hash->update(contents);
-        auto ret_hash = hash->final();
+    secure_vector<uint8_t> crypto_algorithms::keccak256(const secure_vector<uint8_t> &contents) {
+        sha3_context ctx;// Context initialization
+        sha3_Init256(&ctx);
+        sha3_Update(&ctx, contents.data(), contents.size());
+        auto phash_ptr = static_cast<const uint8_t *>(sha3_Finalize(&ctx));
+        auto ret_vec = secure_vector<uint8_t>(phash_ptr, phash_ptr + 32);
 
-        return {ret_hash.begin(), ret_hash.end()};
-    }
-    walletpp::secure_vector<uint8_t> crypto_algorithms::keccak256(const walletpp::secure_vector<uint8_t> &contents) {
-        const auto hash = Botan::HashFunction::create_or_throw("Keccak-1600(256)");
-        hash->update(contents);
-        auto ret_hash = hash->final();
-
-        return {ret_hash.begin(), ret_hash.end()};
+        memset(&ctx, 0, sizeof(sha3_context));
+        return ret_vec;
     }
 
-    walletpp::secure_vector<uint8_t> crypto_algorithms::keccak256(const std::string &contents) {
-        const auto hash = Botan::HashFunction::create_or_throw("Keccak-1600(256)");
-        hash->update(contents);
-        auto ret_hash = hash->final();
+    secure_vector<uint8_t> crypto_algorithms::keccak256(const std::string &contents) {
+        sha3_context ctx;// Context initialization
+        sha3_Init256(&ctx);
+        sha3_Update(&ctx, contents.data(), contents.size());
+        auto phash_ptr = static_cast<const uint8_t *>(sha3_Finalize(&ctx));
+        auto ret_vec = secure_vector<uint8_t>(phash_ptr, phash_ptr + 32);
 
-        return {ret_hash.begin(), ret_hash.end()};
+        memset(&ctx, 0, sizeof(sha3_context));
+        return ret_vec;
     }
 
-    std::string crypto_algorithms::to_hex(const std::span<uint8_t> &contents) { return Botan::hex_encode(contents); }
+    std::string crypto_algorithms::to_hex(const secure_vector<uint8_t> &v) {
+        std::string result;
+        result.reserve(v.size() * 2);// two digits per character
 
-    walletpp::secure_vector<uint8_t> crypto_algorithms::from_hex(const std::string &hex_string) {
-        std::vector<uint8_t> decoded_msg = Botan::hex_decode(hex_string);
-        walletpp::secure_vector<uint8_t> raw_bytes(decoded_msg.begin(), decoded_msg.end());
+        static constexpr char hex[] = "0123456789ABCDEF";
 
-        return raw_bytes;
+        for (const uint8_t c: v) {
+            result.push_back(hex[c / 16]);
+            result.push_back(hex[c % 16]);
+        }
+
+        return result;
+    }
+    secure_vector<uint8_t> crypto_algorithms::from_hex(const std::string &hex_string) {
+        secure_vector<uint8_t> bytes;
+
+        for (unsigned int i = 0; i < hex_string.length(); i += 2) {
+            std::string byteString = hex_string.substr(i, 2);
+            auto byte = static_cast<uint8_t>(std::stoul(byteString, nullptr, 16));
+            bytes.emplace_back(byte);
+        }
+
+        return bytes;
     }
 
     std::array<uint8_t, pbkdf2_sha512_output_byte_size> crypto_algorithms::fast_pbkdf2(const std::string_view password, const std::string_view salt, const size_t iterations) {
@@ -93,8 +130,8 @@ namespace walletpp {
         return out;
     }
 
-    Botan::secure_vector<bool> crypto_algorithms::binary_from_bytes(const walletpp::secure_vector<uint8_t> &bytes, const std::optional<size_t> &num_of_bits) {
-        Botan::secure_vector<bool> bits;
+    secure_vector<uint8_t> crypto_algorithms::binary_from_bytes(const secure_vector<uint8_t> &bytes, const std::optional<size_t> &num_of_bits) {
+        secure_vector<uint8_t> bits;
         size_t bits_to_process = num_of_bits.value_or(bytes.size() * 8);
 
         for (size_t byte_index = 0; byte_index < bytes.size() && bits.size() < bits_to_process; ++byte_index) {
@@ -108,20 +145,18 @@ namespace walletpp {
         return bits;
     }
 
-    walletpp::secure_vector<uint8_t> crypto_algorithms::hmac512(const walletpp::secure_vector<uint8_t> &msg, const walletpp::secure_vector<uint8_t> &key) {
-        auto hmac = Botan::MessageAuthenticationCode::create_or_throw("HMAC(SHA-512)");
+    secure_vector<uint8_t> crypto_algorithms::hmac512(const secure_vector<uint8_t> &key, const secure_vector<uint8_t> &data) {
+        unsigned int len = EVP_MAX_MD_SIZE;
+        secure_vector<uint8_t> digest(len);
 
-        hmac->set_key(key);
-        hmac->update(msg);
-        auto hmacResult = hmac->final();
+        if (HMAC(EVP_sha512(), data.data(), data.size(), key.data(), key.size(), digest.data(), &len) == nullptr) throw std::runtime_error("Failed to compute HMAC-SHA512");
 
-        // Copy the output to a new vector that uses the default allocator
-        walletpp::secure_vector<uint8_t> result(hmacResult.begin(), hmacResult.end());
-
-        return result;
+        digest.resize(len);// Resize the vector to fit the actual size of the HMAC
+        return digest;
     }
 
-    walletpp::secure_vector<uint8_t> crypto_algorithms::generate_private_key(const walletpp::secure_vector<uint8_t> &key, const walletpp::secure_vector<uint8_t> &tweak) {
+
+    secure_vector<uint8_t> crypto_algorithms::generate_private_key(const secure_vector<uint8_t> &key, const secure_vector<uint8_t> &tweak) {
         const auto ctx = secp256k1_context_singleton::get_instance().get_secp256k1_context();
 
         // make a copy to tweak
@@ -134,7 +169,7 @@ namespace walletpp {
         return privateKey;
     }
 
-    walletpp::secure_vector<uint8_t> crypto_algorithms::generate_public_key(const walletpp::secure_vector<uint8_t> &key, bool compressed) {
+    secure_vector<uint8_t> crypto_algorithms::generate_public_key(const secure_vector<uint8_t> &key, bool compressed) {
         const auto ctx = secp256k1_context_singleton::get_instance().get_secp256k1_context();
         const auto len = (compressed) ? 33U : 65U;
 
@@ -145,9 +180,9 @@ namespace walletpp {
         size_t pkLen = len + 1;
 
         /* Apparently there is a 2^-128 chance of
-     * a secret key being invalid.
-     * https://en.bitcoin.it/wiki/Private_key
-     */
+         * a secret key being invalid.
+         * https://en.bitcoin.it/wiki/Private_key
+         */
         /* Verify secret key is valid */
         if (!secp256k1_ec_seckey_verify(ctx, key.data())) {
             printf("Invalid secret key\n");
@@ -164,14 +199,6 @@ namespace walletpp {
 
         return {publicKey33.get(), publicKey33.get() + len};
     }
-    walletpp::secure_vector<uint8_t> crypto_algorithms::generate_entropy(const size_t bytes_size) {
-        static Botan::AutoSeeded_RNG rng;
-        // Generate a vector of random bytes
-        walletpp::secure_vector<uint8_t> random_data(bytes_size);
-        rng.randomize(random_data.data(), random_data.size());
-
-        return random_data;
-    }
 
     uint32_t crypto_algorithms::htobe32(const uint32_t x) {
         union {
@@ -186,19 +213,37 @@ namespace walletpp {
         return u.val;
     }
 
-    walletpp::secure_vector<uint8_t> crypto_algorithms::uint32_to_big_endian_vector(const uint32_t num) {
-        walletpp::secure_vector<uint8_t> vec(4);
+    secure_vector<uint8_t> crypto_algorithms::uint32_to_big_endian_vector(const uint32_t num) {
+        secure_vector<uint8_t> vec(4);
         const uint32_t be_num = htobe32(num);            // Convert to big-endian
         std::memcpy(vec.data(), &be_num, sizeof(be_num));// Copy to vector
         return vec;
     }
-    walletpp::secure_vector<uint8_t> crypto_algorithms::uint32_to_big_endian_bytes(const uint32_t value) {
-        walletpp::secure_vector<uint8_t> bytes(4);
+    secure_vector<uint8_t> crypto_algorithms::uint32_to_big_endian_bytes(const uint32_t value) {
+        secure_vector<uint8_t> bytes(4);
         bytes[0] = static_cast<uint8_t>((value >> 24) & 0xFF);
         bytes[1] = static_cast<uint8_t>((value >> 16) & 0xFF);
         bytes[2] = static_cast<uint8_t>((value >> 8) & 0xFF);
         bytes[3] = static_cast<uint8_t>(value & 0xFF);
 
         return bytes;
+    }
+    auto crypto_algorithms::base58_encode_to_string(secure_vector<uint8_t> data) -> std::string {
+        size_t b58sz = base58_serialized_extened_key_size;// Allocate more space for Base58 encoding
+        std::vector<char> b58(b58sz);
+
+        if (!b58enc(b58.data(), &b58sz, data.data(), data.size())) { throw std::runtime_error("Failed to encode to Base58"); }
+
+        return {b58.begin(), b58.begin() + b58sz - 1};
+    }
+
+    auto crypto_algorithms::base58_decode_to_vector(const std::string &base58_str) -> secure_vector<uint8_t> {
+        auto data = secure_vector<uint8_t>(base58_str.begin(), base58_str.end());
+        size_t binsz = base58_str.size() * 2;// Allocate more space for Base58 decoding
+        std::vector<uint8_t> bin(binsz);
+
+        if (!b58tobin(bin.data(), &binsz, base58_str.c_str(), data.size())) { throw std::runtime_error("Failed to decode from Base58"); }
+
+        return {bin.begin(), bin.begin() + binsz};
     }
 }// namespace walletpp

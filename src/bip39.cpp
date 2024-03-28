@@ -12,7 +12,7 @@ namespace walletpp {
         return {checksum_full.begin(), checksum_full.end()};
     }
 
-    Botan::secure_vector<bool> bip39::checksum_bits_from_entropy(const walletpp::secure_vector<uint8_t> &entropy) {
+    secure_vector<uint8_t> bip39::checksum_bits_from_entropy(const walletpp::secure_vector<uint8_t> &entropy) {
         size_t checksum_bits_length = entropy.size() * single_byte_bits_length / entropy_bits_multiple;
         auto bits = crypto_algorithms::binary_from_bytes(entropy, checksum_bits_length);
         return bits;

@@ -101,6 +101,10 @@ namespace walletpp {
             vec.emplace_back(std::forward<Args>(args)...);
         }
 
+        auto resize(size_t size) -> void {
+            vec.reserve(size);
+        }
+
     private:
         std::vector<T> vec;
 

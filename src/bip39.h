@@ -22,7 +22,7 @@ namespace walletpp {
     public:
         [[nodiscard]] static walletpp::secure_vector<uint8_t> checksum_from_entropy(const walletpp::secure_vector<uint8_t> &entropy);
 
-        [[nodiscard]] static Botan::secure_vector<bool> checksum_bits_from_entropy(const walletpp::secure_vector<uint8_t> &entropy);
+        [[nodiscard]] static secure_vector<uint8_t> checksum_bits_from_entropy(const walletpp::secure_vector<uint8_t> &entropy);
 
         [[nodiscard]] static Botan::secure_vector<uint16_t> words_index_from_entropy(const Botan::secure_vector<bool> &entropy_with_checksum);
 
