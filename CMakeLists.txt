@@ -4,10 +4,10 @@ set(CMAKE_CXX_STANDARD 23)
 project(walletpp)
 set(LIB_NAME walletpp)
 
-set(CMAKE_CXX_FLAGS "-Wall -Wextra")
-set(CMAKE_CXX_FLAGS_DEBUG "-g")
-set(CMAKE_C_FLAGS_RELEASE "-O3")
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Ofast -funroll-loops -flto -march=native -ffast-math")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
+set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -O3 -Wall -Wextra")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall -Wextra -Ofast -funroll-loops -flto -march=native -ffast-math")
 
 include(${CMAKE_CURRENT_LIST_DIR}/cmake/secp256k1.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/cmake/fastpbkdf2.cmake)
@@ -58,7 +58,6 @@ target_include_directories(${LIB_NAME}
         PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/src
         ${CMAKE_CURRENT_SOURCE_DIR}/include
-        ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty
         PRIVATE
         ${secp256k1_SOURCE_DIR}/include
         ${OPENSSL_INCLUDE_DIR}

@@ -15,7 +15,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-#include "fastpbkdf2/fastpbkdf2.h"
+#include "fastpbkdf2.h"
 #include "libbase58.h"
 #include "sha3.h"
 #ifdef __cplusplus
