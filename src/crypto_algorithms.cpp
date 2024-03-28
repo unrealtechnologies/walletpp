@@ -3,7 +3,6 @@
 //
 
 #include "crypto_algorithms.h"
-#include "picosha2.h"
 #include "secp256k1.h"
 #include "secp256k1_context_singleton.h"
 #include "secure_vector.h"
@@ -44,7 +43,7 @@ namespace walletpp {
         secure_vector<uint8_t> digest_vector(digest, digest + digest_len);
         return {digest_vector.begin(), digest_vector.end()};
     }
-    secure_vector<uint8_t> crypto_algorithms::double_sha256(const secure_vector<uint8_t> &contents) { return (sha256(sha256(contents))); }
+    secure_vector<uint8_t> crypto_algorithms::double_sha256(const secure_vector<uint8_t> &contents) { return sha256(sha256(contents)); }
 
     secure_vector<uint8_t> crypto_algorithms::ripemd160(const secure_vector<uint8_t> &contents) {
         EVP_MD_CTX *mdctx;
@@ -78,7 +77,7 @@ namespace walletpp {
         sha3_context ctx;// Context initialization
         sha3_Init256(&ctx);
         sha3_Update(&ctx, contents.data(), contents.size());
-        auto phash_ptr = static_cast<const uint8_t *>(sha3_Finalize(&ctx));
+        const auto phash_ptr = static_cast<const uint8_t *>(sha3_Finalize(&ctx));
         auto ret_vec = secure_vector<uint8_t>(phash_ptr, phash_ptr + 32);
 
         memset(&ctx, 0, sizeof(sha3_context));
@@ -89,7 +88,7 @@ namespace walletpp {
         sha3_context ctx;// Context initialization
         sha3_Init256(&ctx);
         sha3_Update(&ctx, contents.data(), contents.size());
-        auto phash_ptr = static_cast<const uint8_t *>(sha3_Finalize(&ctx));
+        const auto phash_ptr = static_cast<const uint8_t *>(sha3_Finalize(&ctx));
         auto ret_vec = secure_vector<uint8_t>(phash_ptr, phash_ptr + 32);
 
         memset(&ctx, 0, sizeof(sha3_context));
@@ -122,7 +121,7 @@ namespace walletpp {
     }
 
     secure_vector<uint8_t> crypto_algorithms::fast_pbkdf2(const std::string_view password, const std::string_view salt, const size_t iterations) {
-        size_t key_length = pbkdf2_sha512_output_byte_size;
+        constexpr size_t key_length = pbkdf2_sha512_output_byte_size;
         secure_vector<uint8_t> out(key_length);
         fastpbkdf2_hmac_sha512(reinterpret_cast<const uint8_t *>(password.data()), password.size(), reinterpret_cast<const uint8_t *>(salt.data()), salt.size(), iterations,
                                out.data(), out.size());
@@ -132,12 +131,12 @@ namespace walletpp {
 
     secure_vector<uint8_t> crypto_algorithms::binary_from_bytes(const secure_vector<uint8_t> &bytes, const std::optional<size_t> &num_of_bits) {
         secure_vector<uint8_t> bits;
-        size_t bits_to_process = num_of_bits.value_or(bytes.size() * 8);
+        const size_t bits_to_process = num_of_bits.value_or(bytes.size() * 8);
 
         for (size_t byte_index = 0; byte_index < bytes.size() && bits.size() < bits_to_process; ++byte_index) {
             for (int bit_index = 7; bit_index >= 0 && bits.size() < bits_to_process; --bit_index) {
                 // Extract each bit using bitwise AND and shift operations
-                bool bit = (bytes[byte_index] & (1 << bit_index)) != 0;
+                bool bit = (bytes[byte_index] & 1 << bit_index) != 0;
                 bits.emplace_back(bit);
             }
         }
@@ -145,13 +144,13 @@ namespace walletpp {
         return bits;
     }
 
-    secure_vector<uint8_t> crypto_algorithms::hmac512(const secure_vector<uint8_t> &key, const secure_vector<uint8_t> &data) {
+    secure_vector<uint8_t> crypto_algorithms::hmac512(const secure_vector<uint8_t> &msg, const secure_vector<uint8_t> &key) {
         unsigned int len = EVP_MAX_MD_SIZE;
         secure_vector<uint8_t> digest(len);
-
-        if (HMAC(EVP_sha512(), data.data(), data.size(), key.data(), key.size(), digest.data(), &len) == nullptr) throw std::runtime_error("Failed to compute HMAC-SHA512");
-
+        if (HMAC(EVP_sha512(), key.data(), static_cast<int>(key.size()), msg.data(), msg.size(), digest.data(), &len) == nullptr)
+            throw std::runtime_error("Failed to compute HMAC-SHA512");
         digest.resize(len);// Resize the vector to fit the actual size of the HMAC
+
         return digest;
     }
 
@@ -169,13 +168,13 @@ namespace walletpp {
         return privateKey;
     }
 
-    secure_vector<uint8_t> crypto_algorithms::generate_public_key(const secure_vector<uint8_t> &key, bool compressed) {
+    secure_vector<uint8_t> crypto_algorithms::generate_public_key(const secure_vector<uint8_t> &key, const bool compressed) {
         const auto ctx = secp256k1_context_singleton::get_instance().get_secp256k1_context();
-        const auto len = (compressed) ? 33U : 65U;
+        const auto len = compressed ? 33U : 65U;
 
         secp256k1_pubkey pubkey;
 
-        std::unique_ptr<unsigned char[]> publicKey33(new unsigned char[len + 1]);
+        const std::unique_ptr<unsigned char[]> publicKey33(new unsigned char[len + 1]);
         memset(publicKey33.get(), 0, len + 1);
         size_t pkLen = len + 1;
 
@@ -192,10 +191,11 @@ namespace walletpp {
         /* Create Public Key */
         if (!secp256k1_ec_pubkey_create(ctx, &pubkey, key.data())) { throw std::runtime_error("Failed to create public key"); }
 
-        auto serializationMethod = compressed ? SECP256K1_EC_COMPRESSED : SECP256K1_EC_UNCOMPRESSED;
-
         /* Serialize Public Key */
-        if (!secp256k1_ec_pubkey_serialize(ctx, publicKey33.get(), &pkLen, &pubkey, serializationMethod)) { throw std::runtime_error("Failed to serialize public key"); }
+        if (const auto serializationMethod = compressed ? SECP256K1_EC_COMPRESSED : SECP256K1_EC_UNCOMPRESSED;
+            !secp256k1_ec_pubkey_serialize(ctx, publicKey33.get(), &pkLen, &pubkey, serializationMethod)) {
+            throw std::runtime_error("Failed to serialize public key");
+        }
 
         return {publicKey33.get(), publicKey33.get() + len};
     }
@@ -206,7 +206,7 @@ namespace walletpp {
             uint8_t bytes[4];
         } u{};
         u.val = x;
-        std::vector<uint8_t> vec(u.bytes, u.bytes + 4);
+        secure_vector<uint8_t> vec(u.bytes, u.bytes + 4);
         std::ranges::reverse(vec);
         std::ranges::copy(vec, u.bytes);
 
@@ -221,9 +221,9 @@ namespace walletpp {
     }
     secure_vector<uint8_t> crypto_algorithms::uint32_to_big_endian_bytes(const uint32_t value) {
         secure_vector<uint8_t> bytes(4);
-        bytes[0] = static_cast<uint8_t>((value >> 24) & 0xFF);
-        bytes[1] = static_cast<uint8_t>((value >> 16) & 0xFF);
-        bytes[2] = static_cast<uint8_t>((value >> 8) & 0xFF);
+        bytes[0] = static_cast<uint8_t>(value >> 24) & 0xFF;
+        bytes[1] = static_cast<uint8_t>(value >> 16) & 0xFF;
+        bytes[2] = static_cast<uint8_t>(value >> 8) & 0xFF;
         bytes[3] = static_cast<uint8_t>(value & 0xFF);
 
         return bytes;
@@ -231,19 +231,17 @@ namespace walletpp {
     auto crypto_algorithms::base58_encode_to_string(secure_vector<uint8_t> data) -> std::string {
         size_t b58sz = base58_serialized_extened_key_size;// Allocate more space for Base58 encoding
         std::vector<char> b58(b58sz);
-
         if (!b58enc(b58.data(), &b58sz, data.data(), data.size())) { throw std::runtime_error("Failed to encode to Base58"); }
 
-        return {b58.begin(), b58.begin() + b58sz - 1};
+        return {b58.begin(), b58.begin() + static_cast<long>(b58sz) - 1};
     }
 
-    auto crypto_algorithms::base58_decode_to_vector(const std::string &base58_str) -> secure_vector<uint8_t> {
-        auto data = secure_vector<uint8_t>(base58_str.begin(), base58_str.end());
-        size_t binsz = base58_str.size() * 2;// Allocate more space for Base58 decoding
+    auto crypto_algorithms::base58_decode_to_vector(const std::string &base58_string) -> secure_vector<uint8_t> {
+        const auto data = secure_vector<uint8_t>(base58_string.begin(), base58_string.end());
+        auto binsz = base58_string.size() * 2;// Allocate more space for Base58 decoding
         std::vector<uint8_t> bin(binsz);
+        if (!b58tobin(bin.data(), &binsz, base58_string.c_str(), data.size())) { throw std::runtime_error("Failed to decode from Base58"); }
 
-        if (!b58tobin(bin.data(), &binsz, base58_str.c_str(), data.size())) { throw std::runtime_error("Failed to decode from Base58"); }
-
-        return {bin.begin(), bin.begin() + binsz};
+        return {bin.begin(), bin.begin() + static_cast<long>(binsz)};
     }
 }// namespace walletpp

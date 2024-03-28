@@ -8,12 +8,12 @@
 #include <optional>
 
 namespace walletpp {
-    secure_vector<uint8_t> bip39::checksum_from_entropy(const walletpp::secure_vector<uint8_t> &entropy) {
+    secure_vector<uint8_t> bip39::checksum_from_entropy(const secure_vector<uint8_t> &entropy) {
         const auto checksum_full = crypto_algorithms::sha256(entropy);
         return {checksum_full.begin(), checksum_full.end()};
     }
 
-    secure_vector<uint8_t> bip39::checksum_bits_from_entropy(const walletpp::secure_vector<uint8_t> &entropy) {
+    secure_vector<uint8_t> bip39::checksum_bits_from_entropy(const secure_vector<uint8_t> &entropy) {
         size_t checksum_bits_length = entropy.size() * single_byte_bits_length / entropy_bits_multiple;
         auto bits = crypto_algorithms::binary_from_bytes(entropy, checksum_bits_length);
         return bits;
@@ -43,7 +43,7 @@ namespace walletpp {
         return words_index;
     }
 
-    std::vector<std::string_view> bip39::mnemonic_from_entropy(const walletpp::secure_vector<uint8_t> &entropy) {
+    std::vector<std::string_view> bip39::mnemonic_from_entropy(const secure_vector<uint8_t> &entropy) {
         if (entropy.size() < entropy_min_length_in_bytes || entropy.size() > entropy_max_length_in_bytes || entropy.size() % sizeof(uint8_t) != 0) {
             throw std::runtime_error("Key size should be between 128 and 256 "
                                      "bits AKA 16 and 32 bytes");
@@ -72,8 +72,7 @@ namespace walletpp {
         return words;
     }
 
-    secure_vector<uint8_t> bip39::seed_from_mnemonic(const std::vector<std::string_view> &words_vector, const std::string_view salt,
-                                                                                  const size_t number_of_pbkdf2_iterations) {
+    secure_vector<uint8_t> bip39::seed_from_mnemonic(const std::vector<std::string_view> &words_vector, const std::string_view salt, const size_t number_of_pbkdf2_iterations) {
         std::string result;
         for (auto it = words_vector.begin(); it != words_vector.end(); ++it) {
             std::string word_as_string(it->begin(), it->end());

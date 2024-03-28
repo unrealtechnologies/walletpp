@@ -5,30 +5,29 @@
 #include "hd_trie.h"
 
 #include <charconv>
-#include <iostream>
 
 namespace walletpp {
-    void hd_trie::initialize_with_seed(const walletpp::secure_vector<uint8_t> &seed) {
-        auto kp = walletpp::master_key_generator::generate_master_key_pair(seed);
+    void hd_trie::initialize_with_seed(const secure_vector<uint8_t> &seed) {
+        auto kp = master_key_generator::generate_master_key_pair(seed);
         root = std::make_unique<hd_node>(std::move(kp), std::shared_ptr<hd_node>{});
     }
 
-    hd_trie::hd_trie(const walletpp::secure_vector<uint8_t> &seed) { initialize_with_seed(seed); }
+    hd_trie::hd_trie(const secure_vector<uint8_t> &seed) { initialize_with_seed(seed); }
 
-    hd_node *hd_trie::search(std::string_view path) const {
+    hd_node *hd_trie::search(const std::string_view &path) const {
         if (path.empty()) { throw std::invalid_argument("Path cannot be empty"); }
 
-        auto path_list = get_path_vector_from_string(path);
+        const auto path_list = get_path_vector_from_string(path);
         if (path_list.front() == root_identifier) {
             if (path_list.size() == 1) { return root.get(); }
         } else {
             throw std::runtime_error("Invalid path");
         }
 
-        return internal_search_helper(path_list, root.get(), 0);
+        return internal_search_helper(path_list, root.get());
     }
 
-    hd_node *hd_trie::internal_search_helper(const std::vector<std::string_view> &path_vector, hd_node *curr_node, size_t depth) const {
+    hd_node *hd_trie::internal_search_helper(const std::vector<std::string_view> &path_vector, hd_node *curr_node) const {
         if (!curr_node) { throw std::invalid_argument("Current node cannot be null"); }
 
         if (path_vector.empty()) { return curr_node; }
@@ -38,11 +37,11 @@ namespace walletpp {
             std::string_view local_path = path_vector.at(i);
 
             size_t index;
-            if (const auto j = local_path.find(hardened_key_identifier); j == -1) {//not hardered
+            if (local_path.find(hardened_key_identifier) == std::string_view::npos) {//not hardered
                 std::from_chars(local_path.data(), local_path.data() + local_path.size(), index);
             } else {
                 std::from_chars(local_path.data(), local_path.data() + local_path.size() - 1, index);
-                index += walletpp::hardened_key_start_index;
+                index += hardened_key_start_index;
             }
 
             currnode = currnode->derive_child(index);

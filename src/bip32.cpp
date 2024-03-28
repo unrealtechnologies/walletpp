@@ -3,5 +3,3 @@
 //
 
 #include "bip32.h"
-#include "crypto_algorithms.h"
-#include <string>

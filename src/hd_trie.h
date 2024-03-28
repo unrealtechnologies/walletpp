@@ -7,9 +7,9 @@
 
 #include "hd_node.h"
 #include "master_key_generator.h"
+#include <memory>
 #include <ranges>
 #include <vector>
-#include <memory>
 
 namespace walletpp {
     class hd_trie {
@@ -19,9 +19,9 @@ namespace walletpp {
 
         std::shared_ptr<hd_node> root = nullptr;
 
-        void initialize_with_seed(const walletpp::secure_vector<uint8_t> &seed);
+        void initialize_with_seed(const secure_vector<uint8_t> &seed);
 
-        [[nodiscard]] auto internal_search_helper(const std::vector<std::string_view> &path_vector, hd_node *curr_node, size_t depth) const -> hd_node *;
+        [[nodiscard]] auto internal_search_helper(const std::vector<std::string_view> &path_vector, hd_node *curr_node) const -> hd_node *;
         [[nodiscard]] auto get_path_vector_from_string(std::string_view path) const -> std::vector<std::string_view>;
 
     public:
@@ -30,9 +30,9 @@ namespace walletpp {
                   std::weak_ptr<hd_node> null_parent;
                   return std::make_unique<hd_node>(std::move(k_pair), null_parent);
               }()) {}
-        explicit hd_trie(const walletpp::secure_vector<uint8_t> &seed);
+        explicit hd_trie(const secure_vector<uint8_t> &seed);
 
-        [[nodiscard]] auto search(std::string_view path) const -> hd_node *;
+        [[nodiscard]] auto search(const std::string_view &path) const -> hd_node *;
     };
 }// namespace walletpp
 

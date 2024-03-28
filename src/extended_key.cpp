@@ -12,7 +12,7 @@ namespace walletpp {
 
         constexpr std::array<uint8_t, extended_key_version_byte_length> private_version = {0x04, 0x88, 0xAD, 0xE4};
         constexpr std::array<uint8_t, extended_key_version_byte_length> public_version = {0x04, 0x88, 0xB2, 0x1E};
-        auto active_version = (key.size() == private_key_bytes_length) ? private_version : public_version;
+        auto active_version = key.size() == private_key_bytes_length ? private_version : public_version;
         serialized_key.insert(serialized_key.end(), active_version.begin(), active_version.end());
         serialized_key.insert(serialized_key.end(), depth);
         if (parent_finger_print.size() > 0) {

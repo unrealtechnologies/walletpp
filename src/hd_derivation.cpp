@@ -17,12 +17,14 @@ namespace walletpp {
 
         secure_vector<uint8_t> output{};
         if (is_hardered) {
-            secure_vector<uint8_t> p_key = {zero_byte};
+            secure_vector p_key = {zero_byte};
+            p_key.reserve(private_key_bytes_length + 1 + fingerprint_byte_length);
             p_key.insert(p_key.end(), parent_key.key.begin(), parent_key.key.end());
             p_key.insert(p_key.end(), index_be_format.begin(), index_be_format.end());
             output = crypto_algorithms::hmac512(p_key, parent_key.chain_code);
         } else {
             secure_vector<uint8_t> p_key{};
+            p_key.reserve(public_key_bytes_length + fingerprint_byte_length);
             p_key.insert(p_key.end(), parent_public_key.begin(), parent_public_key.end());
             p_key.insert(p_key.end(), index_be_format.begin(), index_be_format.end());
             output = crypto_algorithms::hmac512(p_key, parent_key.chain_code);

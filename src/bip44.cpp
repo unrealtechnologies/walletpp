@@ -6,7 +6,7 @@
 
 namespace walletpp {
     auto bip44::set_purpose(const int purpose) -> void { this->purpose_ = purpose; }
-    auto bip44::set_coin(coins coin) -> void { this->coin_type_ = get_coin_type(coin); }
+    auto bip44::set_coin(const coins coin) -> void { this->coin_type_ = get_coin_type(coin); }
     auto bip44::set_account(const int account) -> void { this->account_ = account; }
     auto bip44::set_change(const int change) -> void { this->change_ = change; }
     auto bip44::set_address_index(const int address_index) -> void { this->address_index_ = address_index; }
@@ -19,6 +19,6 @@ namespace walletpp {
         return "m/" + std::to_string(this->purpose_) + "'/" + std::to_string(this->coin_type_.get_value()) + "'/" + std::to_string(this->account_) + "'/" +
                std::to_string(this->change_) + "/" + std::to_string(this->address_index_);
     }
-    auto bip44::generate(const coins &coin, int index) -> bip44 { return bip44(coin, 0, 0, index); }
+    auto bip44::generate(const coins &coin, const int index) -> bip44 { return {coin, 0, 0, index}; }
 
 }// namespace walletpp

@@ -6,8 +6,8 @@
 #define ENTROPY_H
 
 #include "secure_vector.h"
-#include <vector>
 #include <cstdint>
+#include <vector>
 
 namespace walletpp {
     class entropy {

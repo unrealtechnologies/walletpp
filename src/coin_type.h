@@ -17,8 +17,8 @@ namespace walletpp {
         std::string name;
 
     public:
-        coin_type() = default;
-        coin_type(int value, size_t path_component, std::string symbol, std::string name)
+        coin_type() : value(0), path_component(0) {}
+        coin_type(const int value, const size_t path_component, std::string &&symbol, std::string name)
             : value(value), path_component(path_component), symbol(std::move(symbol)), name(std::move(name)) {}
 
         [[nodiscard]] auto get_value() const -> int { return value; }
@@ -39,7 +39,7 @@ namespace walletpp {
     inline std::map<coins, coin_type> coin_map = create_coin_map();
 
     // Function to get a coin_type instance by coins
-    static coin_type get_coin_type(coins id) { return coin_map[id]; }
+    static coin_type get_coin_type(const coins id) { return coin_map[id]; }
 }// namespace walletpp
 
 

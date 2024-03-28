@@ -9,9 +9,8 @@
 
 
 #include <algorithm>
-#include <vector>
 #include <stdexcept>
-#include <string.h>
+#include <vector>
 
 namespace walletpp {
     template<typename T>

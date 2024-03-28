@@ -24,13 +24,13 @@ namespace walletpp {
             : master_extended_key_pair_(std::move(master_extended_key_pair)),
               tree([&]() -> std::unique_ptr<hd_trie> { return std::make_unique<hd_trie>(std::move(master_extended_key_pair_)); }()) {}
 
-        static bip32 from_seed(const walletpp::secure_vector<uint8_t> &entropy) {
-            auto master_key_pair = walletpp::master_key_generator::generate_master_key_pair(entropy);
+        static bip32 from_seed(const secure_vector<uint8_t> &entropy) {
+            auto master_key_pair = master_key_generator::generate_master_key_pair(entropy);
             return bip32(std::move(master_key_pair));
         }
 
         static bip32 from_seed(const std::array<uint8_t, pbkdf2_sha512_output_byte_size> &entropy_arr) {
-            auto master_key_pair = walletpp::master_key_generator::generate_master_key_pair(walletpp::secure_vector<uint8_t>{entropy_arr.begin(), entropy_arr.end()});
+            auto master_key_pair = master_key_generator::generate_master_key_pair(secure_vector<uint8_t>{entropy_arr.begin(), entropy_arr.end()});
             return bip32(std::move(master_key_pair));
         }
 
