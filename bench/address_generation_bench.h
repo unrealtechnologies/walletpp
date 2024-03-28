@@ -27,7 +27,7 @@ public:
     }
 
     static void benchmark() {
-        constexpr size_t NUM_ADDRESSES = 5000;
+        constexpr size_t NUM_ADDRESSES = 1'000'000;
 
         for (size_t i = 0; i < NUM_ADDRESSES; ++i) {
             const auto entrop = walletpp::entropy::generate_entropy(32);
