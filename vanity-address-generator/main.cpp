@@ -8,6 +8,7 @@
 #include "entropy.h"
 #include "ethereum_utils.h"
 #include <fstream>
+#include <iomanip>
 #include <sstream>
 #include <thread>
 #include <vector>
