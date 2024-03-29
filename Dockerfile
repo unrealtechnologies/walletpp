@@ -32,4 +32,8 @@ RUN cmake -DCMAKE_BUILD_TYPE=Release .. \
   && cmake --build . --parallel 8
 
 RUN chmod +x /app/build/vanity-address-generator/vanity_address_generator
+
+# Define a volume for the /app/data directory to persis data
+VOLUME /app/data
+
 CMD ["./vanity-address-generator/vanity_address_generator"]
