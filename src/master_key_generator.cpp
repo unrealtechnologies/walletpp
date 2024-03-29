@@ -15,7 +15,7 @@ namespace walletpp {
         auto empty_vec = secure_vector<uint8_t>();
         auto extended_master_key = extended_key(std::move(m_key), std::move(m_chaincode), std::move(empty_vec), zero_byte, zero_byte);
 
-        return std::move(extended_master_key);
+        return extended_master_key;
     }
 
     auto master_key_generator::generate_public_key(const extended_key &master_private_extended_key) -> extended_key {
