@@ -8,8 +8,22 @@
 #include "entropy.h"
 #include "ethereum_utils.h"
 #include <fstream>
+#include <sstream>
 #include <thread>
 #include <vector>
+
+auto log(const std::string msg) -> void {
+    const auto now = std::chrono::system_clock::now();
+    const auto in_time_t = std::chrono::system_clock::to_time_t(now);
+
+    std::stringstream ss;
+    ss << std::put_time(std::localtime(&in_time_t), "%Y/%m/%d %I:%M%p") << " " << msg;
+    const std::string log_msg = ss.str();
+
+    // Now log_msg contains the date, time and the message
+    // You can print it to console or write it to a file
+    std::cout << log_msg << std::endl;
+}
 
 auto format_file_name(const std::string_view &file, unsigned int index) -> std::string {
     char l = '{';
@@ -96,13 +110,13 @@ void find_address(unsigned int start, unsigned int step, const std::string &file
             outfile << std::endl;
             outfile.close();
 
-            std::cout << "Found address: " << address << std::endl;
+            log("Found address: " + address);
         }
     }
 }
 
 int main() {
-    std::cout << "Starting address generation" << std::endl;
+    log("Starting address generation");
     const std::string log_file_format = "./addresses-rare-{}.txt";
 
     unsigned int cores = std::thread::hardware_concurrency();
