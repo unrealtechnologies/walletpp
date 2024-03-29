@@ -26,15 +26,10 @@ RUN ln -sf /usr/bin/clang /usr/bin/cc \
 
 COPY . /app
 
-RUN ls -lrt /app
-
 WORKDIR /app/build
 
-# Run cmake to generate the Makefile
 RUN cmake -DCMAKE_BUILD_TYPE=Release .. \
   && cmake --build . --parallel 8
-
-RUN ls -lrt /app/build
 
 RUN chmod +x /app/build/vanity-address-generator/vanity_address_generator
 CMD ["./vanity-address-generator/vanity_address_generator"]
