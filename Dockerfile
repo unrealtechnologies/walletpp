@@ -1,35 +1,40 @@
-# Use NixOS as the base image
-FROM nixos/nix
+FROM alpine:edge
 
-WORKDIR /walletpp
+RUN apk update \
+  && apk upgrade \
+  && apk add --no-cache \
+    clang \
+    clang-dev \
+    alpine-sdk \
+    dpkg \
+    cmake \
+    ccache \
+    python3 \
+    openssl-dev
 
-# Copy your application files into the container
-COPY src/ ./src
-COPY include/ ./include
-COPY thirdparty ./thirdparty
-COPY CMakeLists.txt .
-COPY cmake/ ./cmake
-COPY vanity-address-generator/ ./vanity-address-generator
-COPY nixos/ ./nixos
+RUN ln -sf /usr/bin/clang /usr/bin/cc \
+  && ln -sf /usr/bin/clang++ /usr/bin/c++ \
+  && update-alternatives --install /usr/bin/cc cc /usr/bin/clang 10\
+  && update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++ 10\
+  && update-alternatives --auto cc \
+  && update-alternatives --auto c++ \
+  && update-alternatives --display cc \
+  && update-alternatives --display c++ \
+  && ls -l /usr/bin/cc /usr/bin/c++ \
+  && cc --version \
+  && c++ --version
 
-# add the unstable channel
-RUN nix-channel --add https://nixos.org/channels/nixpkgs-unstable nixpkgs-unstable
-RUN nix-channel --update
+COPY . /app
 
-# set our env
-RUN nix-env -i -f /walletpp/nixos/default.nix
+RUN ls -lrt /app
 
-WORKDIR /walletpp/build
+WORKDIR /app/build
 
-RUN source /root/.nix-profile/etc/profile.d/nix.sh && \
-    nix-shell /walletpp/nixos/shell.nix --command "\
-    echo \$OPENSSL_INCLUDE_DIR && \
-    which openssl && \
-    echo \$OPENSSL_INCLUDE_DIR && \
-    cmake -DCMAKE_BUILD_TYPE=Release .. && \
-    cmake --build . --parallel 8"
+# Run cmake to generate the Makefile
+RUN cmake -DCMAKE_BUILD_TYPE=Release .. \
+  && cmake --build . --parallel 8
 
-WORKDIR /walletpp/build/vanity-address-generator
-RUN chmod +x vanity_address_generator
+RUN ls -lrt /app/build
 
-CMD ["./vanity_address_generator"]
+RUN chmod +x /app/build/vanity-address-generator/vanity_address_generator
+CMD ["./vanity-address-generator/vanity_address_generator"]

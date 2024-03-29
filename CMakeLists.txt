@@ -7,7 +7,6 @@ set(LIB_NAME walletpp)
 include(${CMAKE_CURRENT_LIST_DIR}/cmake/secp256k1.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/cmake/fastpbkdf2.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/cmake/csprng.cmake)
-include(${CMAKE_CURRENT_LIST_DIR}/cmake/keccak256.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/cmake/sha3iuf.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/cmake/libbase58.cmake)
 
@@ -15,6 +14,11 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
 set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -O3 -Wall -Wextra ")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall -Wextra -Ofast -funroll-loops -flto -march=native -ffast-math")
+
+option(BUILD_THIRD_PARTY_AS_STATIC_LIBS "Build Static Libraries" OFF)
+option(BUILD_VANITY_PROJECT "Build vanity project" ON)
+option(BUILD_BENCH_PROJECT "Build bench project" OFF)
+option(BUILD_TESTS "Build tests" OFF)
 
 add_library(${LIB_NAME} STATIC
         include/walletpp.h
@@ -50,6 +54,8 @@ add_library(${LIB_NAME} STATIC
         src/coin_type.h
         src/secure_vector.cpp
         src/secure_vector.h
+
+        ${THIRD_PARTY_PROJECT_SOURCES}
 )
 
 target_include_directories(${LIB_NAME}
@@ -59,29 +65,23 @@ target_include_directories(${LIB_NAME}
 )
 
 target_link_libraries(${LIB_NAME}
-        PRIVATE
+        PUBLIC
         secp256k1
         OpenSSL::SSL
         OpenSSL::Crypto
-        fastpbkdf2
-        csprng
-        keccak256
-        sha3iuf
-        libbase58
+        ${THIRD_PARTY_PROJECT_LIBS}
 )
 
-option(BUILD_TESTS "Build tests" OFF)
 if (BUILD_TESTS)
     add_subdirectory(test)
 endif ()
 
-option(BUILD_VANITY_PROJECT "Build vanity project" ON)
 if (BUILD_VANITY_PROJECT)
     add_subdirectory(vanity-address-generator)
+    add_dependencies(vanity_address_generator ${LIB_NAME})
     target_link_libraries(vanity_address_generator PUBLIC ${LIB_NAME})
 endif ()
 
-option(BUILD_BENCH_PROJECT "Build bench project" OFF)
 if (BUILD_BENCH_PROJECT)
     add_subdirectory(bench)
     target_link_libraries(walletpp_bench PUBLIC ${LIB_NAME})
