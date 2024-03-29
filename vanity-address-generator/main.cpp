@@ -95,11 +95,14 @@ void find_address(unsigned int start, unsigned int step, const std::string &file
             outfile << address << std::endl;
             outfile << std::endl;
             outfile.close();
+
+            std::cout << "Found address: " << address << std::endl;
         }
     }
 }
 
 int main() {
+    std::cout << "Starting address generation" << std::endl;
     const std::string log_file_format = "./addresses-rare-{}.txt";
 
     unsigned int cores = std::thread::hardware_concurrency();
