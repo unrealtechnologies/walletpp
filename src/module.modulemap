@@ -1,0 +1,7 @@
+module Fibonacci {
+  header "fibonacci.h"
+}
+
+module Entropy {
+  header "entropy.h"
+}

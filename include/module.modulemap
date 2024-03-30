@@ -1,0 +1,7 @@
+module Fibonacci {
+  header "fibonacci.h"
+}
+
+module WalletPP {
+  header "walletpp.h"
+}
