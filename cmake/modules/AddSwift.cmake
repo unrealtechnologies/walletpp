@@ -34,6 +34,7 @@ function(_swift_generate_cxx_header_target target module header)
             ${ARG_SOURCES}
             ${SDK_FLAGS}
             -module-name "${module}"
+            -Xcc -std=gnu++2b
             -cxx-interoperability-mode=default
             -emit-clang-header-path "${header}"
             DEPENDS
@@ -46,4 +47,5 @@ function(_swift_generate_cxx_header_target target module header)
             DEPENDS
             "${header}"
     )
+
 endfunction()

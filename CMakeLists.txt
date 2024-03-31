@@ -3,9 +3,12 @@ set(CMAKE_CXX_STANDARD 23)
 
 set(LIB_NAME walletpp)
 
-option(BUILD_FOR_IOS "Build for ios" OFF)
+option(BUILD_FOR_IOS "Build for ios" ON)
 if (BUILD_FOR_IOS)
     project(${LIB_NAME} LANGUAGES CXX Swift)
+
+    set(CMAKE_OSX_DEPLOYMENT_TARGET 15.0)
+    set(CMAKE_CXX_STANDARD 23)
 
     # Verify that we have a new enough compiler
     if ("${CMAKE_Swift_COMPILER_VERSION}" VERSION_LESS 5.9)
@@ -31,8 +34,7 @@ if (BUILD_FOR_IOS)
     set(WALLETPP_SWIFT_SRC_DIR "${CMAKE_SOURCE_DIR}/ios/src")
     set(WALLETPP_BINARY_DIR "${CMAKE_CURRENT_BINARY_DIR}")
 
-    set(CMAKE_OSX_DEPLOYMENT_TARGET 15.0)
-    set(CMAKE_CXX_STANDARD 23)
+
 
     include_directories(${WALLETPP_INCLUDE_DIR})
 
