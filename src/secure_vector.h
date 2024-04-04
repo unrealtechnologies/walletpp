@@ -110,7 +110,7 @@ namespace walletpp {
     protected:
         void secure_erase() {
             // Check if T is std::string, requires #include <type_traits> and <string>
-            if constexpr (std::is_same_v<T, std::string>) {
+            if constexpr (std::is_same<T, std::string>::value) {
                 for (auto &str: vec) {
                     // Using volatile pointer to attempt to prevent optimization of the write loop
                     volatile char *p = const_cast<char *>(str.data());
