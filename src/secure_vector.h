@@ -108,26 +108,9 @@ namespace walletpp {
         std::vector<T> vec;
 
     protected:
-        void secure_erase() {
-            // Check if T is std::string, requires #include <type_traits> and <string>
-            if constexpr (std::is_same_v<T, std::string>) {
-                for (auto &str: vec) {
-                    // Using volatile pointer to attempt to prevent optimization of the write loop
-                    volatile char *p = const_cast<char *>(str.data());
-                    std::size_t len = str.size();
-                    while (len--) { *p++ = 0; }
-                    str.clear();// Deallocate the string's memory
-                }
-            } else {
-                // General case for other types
-                if (!vec.empty()) {
-                    // Note: The use of volatile is removed since memset_s should not be optimized away.
-                    std::fill_n(vec.data(), vec.size(), 0);
-                }
-            }
-            vec.clear();// Clear the vector after securely erasing its content
-        }
+        void secure_erase();
     };
+
 }// namespace walletpp
 
 

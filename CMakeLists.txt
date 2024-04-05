@@ -13,10 +13,10 @@ include(${CMAKE_CURRENT_LIST_DIR}/cmake/libbase58.cmake)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
 set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -O3 -Wall -Wextra ")
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall -Wextra -Ofast -funroll-loops -flto -march=native -ffast-math")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall -Wextra -O3")
 
 option(BUILD_THIRD_PARTY_AS_STATIC_LIBS "Build Static Libraries" OFF)
-option(BUILD_VANITY_PROJECT "Build vanity project" ON)
+option(BUILD_VANITY_PROJECT "Build vanity project" OFF)
 option(BUILD_BENCH_PROJECT "Build bench project" OFF)
 option(BUILD_TESTS "Build tests" OFF)
 
@@ -62,6 +62,7 @@ target_include_directories(${LIB_NAME}
         PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/src
         ${CMAKE_CURRENT_SOURCE_DIR}/include
+        ${THIRD_PARTY_PROJECT_INCLUDES}
 )
 
 target_link_libraries(${LIB_NAME}
@@ -72,17 +73,25 @@ target_link_libraries(${LIB_NAME}
         ${THIRD_PARTY_PROJECT_LIBS}
 )
 
-if (BUILD_TESTS)
-    add_subdirectory(test)
-endif ()
+if (BUILD_IOS)
+    set_target_properties(${LIB_NAME} PROPERTIES ENABLE_BITCODE NO)
+    set_target_properties(secp256k1 PROPERTIES ENABLE_BITCODE NO)
+    include(${CMAKE_CURRENT_LIST_DIR}/cmake/platforms/ios.cmake)
 
-if (BUILD_VANITY_PROJECT)
-    add_subdirectory(vanity-address-generator)
-    add_dependencies(vanity_address_generator ${LIB_NAME})
-    target_link_libraries(vanity_address_generator PUBLIC ${LIB_NAME})
-endif ()
+    else ()
 
-if (BUILD_BENCH_PROJECT)
-    add_subdirectory(bench)
-    target_link_libraries(walletpp_bench PUBLIC ${LIB_NAME})
+    if (BUILD_TESTS)
+        add_subdirectory(test)
+    endif ()
+
+    if (BUILD_VANITY_PROJECT)
+        add_subdirectory(vanity-address-generator)
+        add_dependencies(vanity_address_generator ${LIB_NAME})
+        target_link_libraries(vanity_address_generator PUBLIC ${LIB_NAME})
+    endif ()
+
+    if (BUILD_BENCH_PROJECT)
+        add_subdirectory(bench)
+        target_link_libraries(walletpp_bench PUBLIC ${LIB_NAME})
+    endif ()
 endif ()
