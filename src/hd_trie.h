@@ -21,18 +21,18 @@ namespace walletpp {
 
         void initialize_with_seed(const secure_vector<uint8_t> &seed);
 
-        [[nodiscard]] auto internal_search_helper(const std::vector<std::string_view> &path_vector, hd_node *curr_node) const -> hd_node *;
+        [[nodiscard]] auto internal_search_helper(const std::vector<std::string_view> &path_vector, std::shared_ptr<hd_node> curr_node) const -> std::shared_ptr<hd_node>;
         [[nodiscard]] auto get_path_vector_from_string(std::string_view path) const -> std::vector<std::string_view>;
 
     public:
-        explicit hd_trie(key_pair &&k_pair)
+        explicit hd_trie(std::pair<std::unique_ptr<extended_key>, std::unique_ptr<extended_key>> &&k_pair)
             : root([&]() -> std::shared_ptr<hd_node> {
                   std::weak_ptr<hd_node> null_parent;
-                  return std::make_unique<hd_node>(std::move(k_pair), null_parent);
+                  return std::make_shared<hd_node>(std::move(k_pair.first), std::move(k_pair.second), null_parent);
               }()) {}
         explicit hd_trie(const secure_vector<uint8_t> &seed);
 
-        [[nodiscard]] auto search(const std::string_view &path) const -> hd_node *;
+        [[nodiscard]] auto search(const std::string_view &path) const -> std::shared_ptr<hd_node>;
     };
 }// namespace walletpp
 

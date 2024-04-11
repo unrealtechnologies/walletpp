@@ -7,22 +7,18 @@
 
 #include "bip39.h"
 #include "hd_trie.h"
-#include "key_pair.h"
 #include "secure_vector.h"
 
 
 namespace walletpp {
     class bip32 {
-        key_pair master_extended_key_pair_;
+        std::pair<std::unique_ptr<extended_key>, std::unique_ptr<extended_key>> master_extended_key_pair_;
         const std::unique_ptr<hd_trie> tree;
 
-        key_pair from_base_58(const std::string_view &key);
-        key_pair derive_path(const std::string_view &path);
-
     public:
-        explicit bip32(key_pair &&master_extended_key_pair)
-            : master_extended_key_pair_(std::move(master_extended_key_pair)),
-              tree([&]() -> std::unique_ptr<hd_trie> { return std::make_unique<hd_trie>(std::move(master_extended_key_pair_)); }()) {}
+        explicit bip32(std::pair<std::unique_ptr<extended_key>, std::unique_ptr<extended_key>> &&master_extended_key_pair)
+            : master_extended_key_pair_(std::move(master_extended_key_pair)), tree(std::make_unique<hd_trie>(std::move(master_extended_key_pair_))) {}
+
 
         static bip32 from_seed(const secure_vector<uint8_t> &entropy) {
             auto master_key_pair = master_key_generator::generate_master_key_pair(entropy);
@@ -34,7 +30,7 @@ namespace walletpp {
             return bip32(std::move(master_key_pair));
         }
 
-        [[nodiscard]] auto derive_keypair_with_path(const std::string_view path) const -> hd_node * { return tree->search(path); }
+        [[nodiscard]] auto derive_keypair_with_path(const std::string_view path) const -> std::shared_ptr<hd_node> { return tree->search(path); }
     };
 }// namespace walletpp
 

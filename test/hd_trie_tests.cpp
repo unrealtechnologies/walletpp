@@ -13,89 +13,89 @@ SCENARIO("Deriving key-pair values given a bip32 tree path string", "[hd-trie]")
     const auto trie = std::make_unique<walletpp::hd_trie>(seed);
 
     WHEN("We generate the keypair for path: m") {
-        auto key_pair = trie->search("m")->get_key_pair();
+        auto [priv_key, pub_key] = trie->search("m")->get_key_pair();
         THEN("Private and Public key should be correct") {
-            REQUIRE(key_pair.private_key.to_base58_string() == "xprv9s21ZrQH143K3QTDL4LXw2F7HEK3wJUD2nW2nRk4stbPy6cq3jPPqjiChkVvvNKmPGJxWUtg6LnF5kejMRNNU3TGtRBeJgk33yuGBxrMPHi");
+            REQUIRE(priv_key.to_base58_string() == "xprv9s21ZrQH143K3QTDL4LXw2F7HEK3wJUD2nW2nRk4stbPy6cq3jPPqjiChkVvvNKmPGJxWUtg6LnF5kejMRNNU3TGtRBeJgk33yuGBxrMPHi");
         }
     }
 
     WHEN("We generate the keypair for path: m/0") {
-        auto key_pair = trie->search("m/0")->get_key_pair();
+        auto [priv_key, pub_key] = trie->search("m/0")->get_key_pair();
         THEN("Private and Public key should be correct") {
-            REQUIRE(key_pair.private_key.to_base58_string() == "xprv9uHRZZhbkedL37eZEnyrNsQPFZYRAvjy5rt6M1nbEkLSo378x1CQQLo2xxBvREwiK6kqf7GRNvsNEchwibzXaV6i5GcsgyjBeRguXhKsi4R");
+            REQUIRE(priv_key.to_base58_string() == "xprv9uHRZZhbkedL37eZEnyrNsQPFZYRAvjy5rt6M1nbEkLSo378x1CQQLo2xxBvREwiK6kqf7GRNvsNEchwibzXaV6i5GcsgyjBeRguXhKsi4R");
         }
 
         THEN("The public address for ethereum should be correct") {
-            auto address = walletpp::ethereum_utils::generate_ethereum_address(key_pair.private_key.key);
+            auto address = walletpp::ethereum_utils::generate_ethereum_address(priv_key.key);
             REQUIRE(address == "0xAEfbb50942817d8270Bb9bD922aA5ca9cb06cDBf");
         }
     }
 
     WHEN("We generate the keypair for path: m/0/1") {
-        auto key_pair = trie->search("m/0/1")->get_key_pair();
+       auto [priv_key, pub_key] = trie->search("m/0/1")->get_key_pair();
         THEN("Private and Public key should be correct") {
-            REQUIRE(key_pair.private_key.to_base58_string() == "xprv9ww7sMFLzJMzy7bV1qs7nGBxgKYrgcm3HcJvGb4yvNhT9vxXC7eX7WVULzCfxucFEn2TsVvJw25hH9d4mchywguGQCZvRgsiRaTY1HCqN8G");
+            REQUIRE(priv_key.to_base58_string() == "xprv9ww7sMFLzJMzy7bV1qs7nGBxgKYrgcm3HcJvGb4yvNhT9vxXC7eX7WVULzCfxucFEn2TsVvJw25hH9d4mchywguGQCZvRgsiRaTY1HCqN8G");
         }
     }
 
     WHEN("We generate the keypair for path: m/0/1/4/5") {
-        auto key_pair = trie->search("m/0/1/4/5")->get_key_pair();
+       auto [priv_key, pub_key] = trie->search("m/0/1/4/5")->get_key_pair();
         THEN("Private and Public key should be correct") {
-            REQUIRE(key_pair.private_key.to_base58_string() == "xprvA1rfzDvQx936D2ZdVpMfhPupVUBnzpkweP2F7dYM1g1ofTogN4TU4FdH1oUrmkPtc96itjUg3XfuHhqprdrMRmCwer9VeCaxGBWZKhSerWC");
+            REQUIRE(priv_key.to_base58_string() == "xprvA1rfzDvQx936D2ZdVpMfhPupVUBnzpkweP2F7dYM1g1ofTogN4TU4FdH1oUrmkPtc96itjUg3XfuHhqprdrMRmCwer9VeCaxGBWZKhSerWC");
         }
     }
 
     WHEN("We generate the keypair for path: m/0'") {
-        auto key_pair = trie->search("m/0'")->get_key_pair();
+       auto [priv_key, pub_key] = trie->search("m/0'")->get_key_pair();
         THEN("Private and Public key should be correct") {
-            REQUIRE(key_pair.private_key.to_base58_string() == "xprv9uHRZZhk6KAJC1avXpDAp4MDc3sQKNxDiPvvkX8Br5ngLNv1TxvUxt4cV1rGL5hj6KCesnDYUhd7oWgT11eZG7XnxHrnYeSvkzY7d2bhkJ7");
-            REQUIRE(key_pair.public_key.to_base58_string() == "xpub68Gmy5EdvgibQVfPdqkBBCHxA5htiqg55crXYuXoQRKfDBFA1WEjWgP6LHhwBZeNK1VTsfTFUHCdrfp1bgwQ9xv5ski8PX9rL2dZXvgGDnw");
+            REQUIRE(priv_key.to_base58_string() == "xprv9uHRZZhk6KAJC1avXpDAp4MDc3sQKNxDiPvvkX8Br5ngLNv1TxvUxt4cV1rGL5hj6KCesnDYUhd7oWgT11eZG7XnxHrnYeSvkzY7d2bhkJ7");
+            REQUIRE(pub_key.to_base58_string() == "xpub68Gmy5EdvgibQVfPdqkBBCHxA5htiqg55crXYuXoQRKfDBFA1WEjWgP6LHhwBZeNK1VTsfTFUHCdrfp1bgwQ9xv5ski8PX9rL2dZXvgGDnw");
         }
     }
 
     WHEN("We generate the keypair for path: m/0'/0") {
-        auto key_pair = trie->search("m/0'/0")->get_key_pair();
+       auto [priv_key, pub_key] = trie->search("m/0'/0")->get_key_pair();
         THEN("Private and Public key should be correct") {
-            REQUIRE(key_pair.private_key.to_base58_string() == "xprv9wTYmMFdV23N21MM6dLNavSQV7Sj7meSPXx6AV5eTdqqGLjycVjb115Ec5LgRAXscPZgy5G4jQ9csyyZLN3PZLxoM1h3BoPuEJzsgeypdKj");
-            REQUIRE(key_pair.public_key.to_base58_string() == "xpub6ASuArnXKPbfEVRpCesNx4P939HDXENHkksgxsVG1yNp9958A33qYoPiTN9QrJmWFa2jNLdK84bWmyqTSPGtApP8P7nHUYwxHPhqmzUyeFG");
+            REQUIRE(priv_key.to_base58_string() == "xprv9wTYmMFdV23N21MM6dLNavSQV7Sj7meSPXx6AV5eTdqqGLjycVjb115Ec5LgRAXscPZgy5G4jQ9csyyZLN3PZLxoM1h3BoPuEJzsgeypdKj");
+            REQUIRE(pub_key.to_base58_string() == "xpub6ASuArnXKPbfEVRpCesNx4P939HDXENHkksgxsVG1yNp9958A33qYoPiTN9QrJmWFa2jNLdK84bWmyqTSPGtApP8P7nHUYwxHPhqmzUyeFG");
         }
 
         THEN("The public address for ethereum should be correct") {
-            auto key_pair = trie->search("m/0'/0")->get_key_pair();
-            auto address = walletpp::ethereum_utils::generate_ethereum_address(key_pair.private_key.key);
+           auto [priv_key, pub_key] = trie->search("m/0'/0")->get_key_pair();
+            auto address = walletpp::ethereum_utils::generate_ethereum_address(priv_key.key);
             REQUIRE(address == "0x91860ef4Fc12f4dCa2564A3f7fcceA9325831aC6");
         }
     }
 
     WHEN("We generate the keypair for path: m/44'/60'/0'/0") {
-        auto key_pair = trie->search("m/44'/60'/0'/0")->get_key_pair();
+       auto [priv_key, pub_key] = trie->search("m/44'/60'/0'/0")->get_key_pair();
         THEN("Private and Public key should be correct") {
-            REQUIRE(key_pair.private_key.to_base58_string() == "xprv9zZhZKG7taxeit8w1HiTDdUko2Fm1RxkrjxANbEaG7kFvJp5UEh6MiQ5b5XvwWg8xdHMhueagettVG2AbfqSRDyNpxRDBLyMSbNq1KhZ8ai");
-            REQUIRE(key_pair.public_key.to_base58_string() == "xpub6DZ3xpo1ixWwwNDQ7KFTamRVM46FQtgcDxsmAyeBpTHEo79E1n1LuWiZSMSRhqMQmrHaqJpek2TbtTzbAdNWJm9AhGdv7iJUpDjA6oJD84b");
+            REQUIRE(priv_key.to_base58_string() == "xprv9zZhZKG7taxeit8w1HiTDdUko2Fm1RxkrjxANbEaG7kFvJp5UEh6MiQ5b5XvwWg8xdHMhueagettVG2AbfqSRDyNpxRDBLyMSbNq1KhZ8ai");
+            REQUIRE(pub_key.to_base58_string() == "xpub6DZ3xpo1ixWwwNDQ7KFTamRVM46FQtgcDxsmAyeBpTHEo79E1n1LuWiZSMSRhqMQmrHaqJpek2TbtTzbAdNWJm9AhGdv7iJUpDjA6oJD84b");
         }
 
         THEN("We're able to derive the first 10 unhardened child keys with index 1..10 and verify ethereum addresses") {
-            auto child_index_0 = walletpp::hd_derivation::private_and_public_key_pair_derivation(key_pair.private_key, 0);
-            auto child_index_1 = walletpp::hd_derivation::private_and_public_key_pair_derivation(key_pair.private_key, 1);
-            auto child_index_2 = walletpp::hd_derivation::private_and_public_key_pair_derivation(key_pair.private_key, 2);
-            auto child_index_3 = walletpp::hd_derivation::private_and_public_key_pair_derivation(key_pair.private_key, 3);
-            auto child_index_4 = walletpp::hd_derivation::private_and_public_key_pair_derivation(key_pair.private_key, 4);
-            auto child_index_5 = walletpp::hd_derivation::private_and_public_key_pair_derivation(key_pair.private_key, 5);
-            auto child_index_6 = walletpp::hd_derivation::private_and_public_key_pair_derivation(key_pair.private_key, 6);
-            auto child_index_7 = walletpp::hd_derivation::private_and_public_key_pair_derivation(key_pair.private_key, 7);
-            auto child_index_8 = walletpp::hd_derivation::private_and_public_key_pair_derivation(key_pair.private_key, 8);
-            auto child_index_9 = walletpp::hd_derivation::private_and_public_key_pair_derivation(key_pair.private_key, 9);
+            auto [child_index_0_priv_key, child_index_0_pub_key] = walletpp::hd_derivation::private_and_public_key_pair_derivation(priv_key, 0);
+            auto [child_index_1_priv_key, child_index_1_pub_key] = walletpp::hd_derivation::private_and_public_key_pair_derivation(priv_key, 1);
+            auto [child_index_2_priv_key, child_index_2_pub_key] = walletpp::hd_derivation::private_and_public_key_pair_derivation(priv_key, 2);
+            auto [child_index_3_priv_key, child_index_3_pub_key] = walletpp::hd_derivation::private_and_public_key_pair_derivation(priv_key, 3);
+            auto [child_index_4_priv_key, child_index_4_pub_key] = walletpp::hd_derivation::private_and_public_key_pair_derivation(priv_key, 4);
+            auto [child_index_5_priv_key, child_index_5_pub_key] = walletpp::hd_derivation::private_and_public_key_pair_derivation(priv_key, 5);
+            auto [child_index_6_priv_key, child_index_6_pub_key] = walletpp::hd_derivation::private_and_public_key_pair_derivation(priv_key, 6);
+            auto [child_index_7_priv_key, child_index_7_pub_key] = walletpp::hd_derivation::private_and_public_key_pair_derivation(priv_key, 7);
+            auto [child_index_8_priv_key, child_index_8_pub_key] = walletpp::hd_derivation::private_and_public_key_pair_derivation(priv_key, 8);
+            auto [child_index_9_priv_key, child_index_9_pub_key] = walletpp::hd_derivation::private_and_public_key_pair_derivation(priv_key, 9);
 
-            auto child_address_0 = walletpp::ethereum_utils::generate_ethereum_address(child_index_0.private_key.key);
-            auto child_address_1 = walletpp::ethereum_utils::generate_ethereum_address(child_index_1.private_key.key);
-            auto child_address_2 = walletpp::ethereum_utils::generate_ethereum_address(child_index_2.private_key.key);
-            auto child_address_3 = walletpp::ethereum_utils::generate_ethereum_address(child_index_3.private_key.key);
-            auto child_address_4 = walletpp::ethereum_utils::generate_ethereum_address(child_index_4.private_key.key);
-            auto child_address_5 = walletpp::ethereum_utils::generate_ethereum_address(child_index_5.private_key.key);
-            auto child_address_6 = walletpp::ethereum_utils::generate_ethereum_address(child_index_6.private_key.key);
-            auto child_address_7 = walletpp::ethereum_utils::generate_ethereum_address(child_index_7.private_key.key);
-            auto child_address_8 = walletpp::ethereum_utils::generate_ethereum_address(child_index_8.private_key.key);
-            auto child_address_9 = walletpp::ethereum_utils::generate_ethereum_address(child_index_9.private_key.key);
+            auto child_address_0 = walletpp::ethereum_utils::generate_ethereum_address(child_index_0_priv_key->key);
+            auto child_address_1 = walletpp::ethereum_utils::generate_ethereum_address(child_index_1_priv_key->key);
+            auto child_address_2 = walletpp::ethereum_utils::generate_ethereum_address(child_index_2_priv_key->key);
+            auto child_address_3 = walletpp::ethereum_utils::generate_ethereum_address(child_index_3_priv_key->key);
+            auto child_address_4 = walletpp::ethereum_utils::generate_ethereum_address(child_index_4_priv_key->key);
+            auto child_address_5 = walletpp::ethereum_utils::generate_ethereum_address(child_index_5_priv_key->key);
+            auto child_address_6 = walletpp::ethereum_utils::generate_ethereum_address(child_index_6_priv_key->key);
+            auto child_address_7 = walletpp::ethereum_utils::generate_ethereum_address(child_index_7_priv_key->key);
+            auto child_address_8 = walletpp::ethereum_utils::generate_ethereum_address(child_index_8_priv_key->key);
+            auto child_address_9 = walletpp::ethereum_utils::generate_ethereum_address(child_index_9_priv_key->key);
 
             REQUIRE(child_address_0 == "0x022b971dFF0C43305e691DEd7a14367AF19D6407");
             REQUIRE(child_address_1 == "0xbb7A182240010703dc81D6b1EFf630CA02a169FD");

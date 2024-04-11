@@ -8,31 +8,31 @@
 
 namespace walletpp {
     void hd_trie::initialize_with_seed(const secure_vector<uint8_t> &seed) {
-        auto kp = master_key_generator::generate_master_key_pair(seed);
-        root = std::make_unique<hd_node>(std::move(kp), std::shared_ptr<hd_node>{});
+        auto [private_ext_key, public_ext_key] = master_key_generator::generate_master_key_pair(seed);
+        root = std::make_shared<hd_node>(std::move(private_ext_key), std::move(public_ext_key), std::shared_ptr<hd_node>{});
     }
 
     hd_trie::hd_trie(const secure_vector<uint8_t> &seed) { initialize_with_seed(seed); }
 
-    hd_node *hd_trie::search(const std::string_view &path) const {
+    std::shared_ptr<hd_node> hd_trie::search(const std::string_view &path) const {
         if (path.empty()) { throw std::invalid_argument("Path cannot be empty"); }
 
         const auto path_list = get_path_vector_from_string(path);
         if (path_list.front() == root_identifier) {
-            if (path_list.size() == 1) { return root.get(); }
+            if (path_list.size() == 1) { return root; }
         } else {
             throw std::runtime_error("Invalid path");
         }
 
-        return internal_search_helper(path_list, root.get());
+        return internal_search_helper(path_list, root);
     }
 
-    hd_node *hd_trie::internal_search_helper(const std::vector<std::string_view> &path_vector, hd_node *curr_node) const {
+    std::shared_ptr<hd_node> hd_trie::internal_search_helper(const std::vector<std::string_view> &path_vector, std::shared_ptr<hd_node> curr_node) const {
         if (!curr_node) { throw std::invalid_argument("Current node cannot be null"); }
 
         if (path_vector.empty()) { return curr_node; }
 
-        hd_node *currnode = curr_node;
+        auto currnode = curr_node;
         for (size_t i = 1; i < path_vector.size(); i++) {
             std::string_view local_path = path_vector.at(i);
 
