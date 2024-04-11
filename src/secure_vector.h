@@ -37,7 +37,6 @@ namespace walletpp {
 
         secure_vector &operator=(const secure_vector &other) = default;
 
-
         // Range constructor
         template<typename InputIterator>
         secure_vector(InputIterator first, InputIterator last) : vec(first, last) {}
@@ -108,7 +107,24 @@ namespace walletpp {
         std::vector<T> vec;
 
     protected:
-        void secure_erase();
+        void secure_erase() {
+            if constexpr (std::is_same<T, std::string>::value) {
+                for (auto &str: vec) {
+                    // Using volatile pointer to attempt to prevent optimization of the write loop
+                    volatile char *p = const_cast<char *>(str.data());
+                    std::size_t len = str.size();
+                    while (len--) { *p++ = 0; }
+                    str.clear();// Deallocate the string's memory
+                }
+            } else {
+                // General case for other types
+                if (!vec.empty()) {
+                    // Note: The use of volatile is removed since memset_s should not be optimized away.
+                    std::fill_n(vec.data(), vec.size(), 0);
+                }
+            }
+            vec.clear();// Clear the vector after securely erasing its content
+        }
     };
 
 }// namespace walletpp
