@@ -54,7 +54,6 @@ add_library(${LIB_NAME} STATIC
         src/secure_vector.h
 
         ${THIRD_PARTY_PROJECT_SOURCES}
-        include/self_custody_wallet.h
 )
 
 target_include_directories(${LIB_NAME}
