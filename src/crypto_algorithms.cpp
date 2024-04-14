@@ -3,7 +3,6 @@
 //
 
 #include "crypto_algorithms.h"
-#include "secp256k1.h"
 #include "secp256k1_context_singleton.h"
 #include "secure_vector.h"
 #include <cassert>

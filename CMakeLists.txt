@@ -23,35 +23,35 @@ option(BUILD_TESTS "Build tests" ON)
 add_library(${LIB_NAME} STATIC
         include/walletpp.h
         src/entropy.cpp
-        src/entropy.h
+        include/entropy.h
         src/bip39.cpp
         include/bip39.h
         src/crypto_algorithms.cpp
-        src/crypto_algorithms.h
-        src/wordlist.h
-        src/extended_key.h
+        include/crypto_algorithms.h
+        include/wordlist.h
+        include/extended_key.h
         src/hd_derivation.cpp
-        src/hd_derivation.h
-        src/secp256k1_context_singleton.h
+        include/hd_derivation.h
+        include/secp256k1_context_singleton.h
         src/secp256k1_context_singleton.cpp
         src/bip32.cpp
         include/bip32.h
-        src/constants.h
+        include/constants.h
         src/master_key_generator.cpp
-        src/master_key_generator.h
+        include/master_key_generator.h
         src/hd_trie.cpp
-        src/hd_trie.h
+        include/hd_trie.h
         src/hd_node.cpp
-        src/hd_node.h
+        include/hd_node.h
         src/ethereum_utils.cpp
-        src/ethereum_utils.h
+        include/ethereum_utils.h
         src/extended_key.cpp
         src/bip44.cpp
         include/bip44.h
         src/coin_type.cpp
-        src/coin_type.h
+        include/coin_type.h
         src/secure_vector.cpp
-        src/secure_vector.h
+        include/secure_vector.h
 
         ${THIRD_PARTY_PROJECT_SOURCES}
 )
@@ -71,6 +71,10 @@ target_link_libraries(${LIB_NAME}
         OpenSSL::SSL
         OpenSSL::Crypto
         ${THIRD_PARTY_PROJECT_LIBS}
+)
+
+target_include_directories(${LIB_NAME} PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
 if (BUILD_IOS)

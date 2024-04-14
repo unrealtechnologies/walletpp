@@ -8,7 +8,6 @@
 #include "secure_vector.h"
 #include <cstddef>
 #include <cstdint>
-#include <iostream>
 
 namespace walletpp {
     static constexpr size_t private_key_bytes_length = 32;
