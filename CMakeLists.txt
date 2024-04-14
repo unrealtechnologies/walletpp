@@ -18,14 +18,14 @@ set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall -Wextra -O3")
 option(BUILD_THIRD_PARTY_AS_STATIC_LIBS "Build Static Libraries" OFF)
 option(BUILD_VANITY_PROJECT "Build vanity project" OFF)
 option(BUILD_BENCH_PROJECT "Build bench project" OFF)
-option(BUILD_TESTS "Build tests" OFF)
+option(BUILD_TESTS "Build tests" ON)
 
 add_library(${LIB_NAME} STATIC
         include/walletpp.h
         src/entropy.cpp
         src/entropy.h
         src/bip39.cpp
-        src/bip39.h
+        include/bip39.h
         src/crypto_algorithms.cpp
         src/crypto_algorithms.h
         src/wordlist.h
@@ -35,12 +35,10 @@ add_library(${LIB_NAME} STATIC
         src/secp256k1_context_singleton.h
         src/secp256k1_context_singleton.cpp
         src/bip32.cpp
-        src/bip32.h
+        include/bip32.h
         src/constants.h
         src/master_key_generator.cpp
         src/master_key_generator.h
-        src/key_pair.cpp
-        src/key_pair.h
         src/hd_trie.cpp
         src/hd_trie.h
         src/hd_node.cpp
@@ -49,19 +47,20 @@ add_library(${LIB_NAME} STATIC
         src/ethereum_utils.h
         src/extended_key.cpp
         src/bip44.cpp
-        src/bip44.h
+        include/bip44.h
         src/coin_type.cpp
         src/coin_type.h
         src/secure_vector.cpp
         src/secure_vector.h
 
         ${THIRD_PARTY_PROJECT_SOURCES}
+        include/self_custody_wallet.h
 )
 
 target_include_directories(${LIB_NAME}
         PUBLIC
-        ${CMAKE_CURRENT_SOURCE_DIR}/src
         ${CMAKE_CURRENT_SOURCE_DIR}/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
         ${THIRD_PARTY_PROJECT_INCLUDES}
 )
 
