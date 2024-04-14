@@ -58,7 +58,9 @@ add_library(${LIB_NAME} STATIC
 
 target_include_directories(${LIB_NAME}
         PUBLIC
-        ${CMAKE_CURRENT_SOURCE_DIR}/include
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:include>  # This is for install targets
+        PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src
         ${THIRD_PARTY_PROJECT_INCLUDES}
 )
