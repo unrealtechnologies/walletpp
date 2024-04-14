@@ -49,7 +49,7 @@ check_type_size(time_t SIZEOF_TIME_T)
 file(GLOB_RECURSE all_cpp_files ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 file(GLOB_RECURSE all_hpp_files
         "${CMAKE_CURRENT_SOURCE_DIR}/src/*.h"
-        "${CMAKE_CURRENT_SOURCE_DIR}/src_dir/include/*.h"
+        "${CMAKE_CURRENT_SOURCE_DIR}/include/*.h"
 )
 
 # Source files
