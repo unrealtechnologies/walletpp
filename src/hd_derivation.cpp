@@ -36,7 +36,6 @@ namespace walletpp {
         //The returned child key ki is parse256(IL) + kpar (mod n).
         auto private_key = crypto_algorithms::generate_private_key(parent_key.key, IL);
         auto fingerprint = extended_key::fingerprint(parent_public_key);
-        // auto extended_private_key = extended_key(std::move(private_key), std::move(IR), std::move(fingerprint), parent_key.depth + 1, index);
         auto extended_private_key = std::make_unique<extended_key>(std::move(private_key), std::move(IR), std::move(fingerprint), parent_key.depth + 1, index);
 
         return extended_private_key;
