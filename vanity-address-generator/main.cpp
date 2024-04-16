@@ -12,6 +12,7 @@
 #include <sstream>
 #include <thread>
 #include <vector>
+#include <iostream>
 
 auto log(const std::string msg) -> void {
     const auto now = std::chrono::system_clock::now();

@@ -60,10 +60,13 @@ target_include_directories(${LIB_NAME}
         PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>  # This is for install targets
+        ${THIRD_PARTY_PROJECT_INCLUDES}
         PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src
-        ${THIRD_PARTY_PROJECT_INCLUDES}
+#        ${THIRD_PARTY_PROJECT_INCLUDES}
 )
+
+message("THIRD_PARTY_PROJECT_INCLUDES: ${THIRD_PARTY_PROJECT_INCLUDES}")
 
 target_link_libraries(${LIB_NAME}
         PUBLIC
@@ -73,9 +76,9 @@ target_link_libraries(${LIB_NAME}
         ${THIRD_PARTY_PROJECT_LIBS}
 )
 
-target_include_directories(${LIB_NAME} PUBLIC
-        ${CMAKE_CURRENT_SOURCE_DIR}/include
-)
+#target_include_directories(${LIB_NAME} PUBLIC
+#        ${CMAKE_CURRENT_SOURCE_DIR}/include
+#)
 
 if (BUILD_IOS)
     set_target_properties(${LIB_NAME} PROPERTIES ENABLE_BITCODE NO)
