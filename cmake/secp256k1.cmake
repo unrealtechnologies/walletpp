@@ -1,30 +1,17 @@
 # Fetch and configure secp256k1
-#include(FetchContent)
-#FetchContent_Declare(
-#        secp256k1
-#        GIT_REPOSITORY https://github.com/bitcoin-core/secp256k1.git
-#        GIT_TAG master
-#)
-#
-#FetchContent_MakeAvailable(secp256k1)
+set(SECP256K1_BUILD_TESTS OFF CACHE BOOL "Disable all tests" FORCE)
+set(SECP256K1_BUILD_BENCHMARK OFF CACHE BOOL "Disable all benchmarks" FORCE)
+set(SECP256K1_BUILD_EXHAUSTIVE_TESTS OFF CACHE BOOL "Disable all exhaustive tests" FORCE)
 
-#add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/secp256k1)
-#add_library(secp256k1 STATIC ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/libbase58/base58.c)
+include(FetchContent)
+FetchContent_Declare(
+        secp256k1
+        SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/secp256k1
+)
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/secp256k1)
+FetchContent_GetProperties(secp256k1)
+if(NOT secp256k1_POPULATED)
+    FetchContent_Populate(secp256k1)
+    add_subdirectory(${secp256k1_SOURCE_DIR} ${secp256k1_BINARY_DIR})
+endif()
 
-if (BUILD_THIRD_PARTY_AS_STATIC_LIBS)
-    add_library(secp256k1 STATIC ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/secp256k1/src/secp256k1.c)
-    set(THIRD_PARTY_PROJECT_LIBS ${THIRD_PARTY_PROJECT_LIBS} secp256k1)
-    set(THIRD_PARTY_PROJECT_INCLUDES ${THIRD_PARTY_PROJECT_INCLUDES} ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/secp256k1/include)
-
-else ()
-    file(GLOB secp256k1_SRC
-            "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/secp256k1/include/*.h"
-            "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/secp256k1/src/*.c"
-    )
-
-    add_library(secp256k1 STATIC ${secp256k1_SRC})
-    set(THIRD_PARTY_PROJECT_INCLUDES ${THIRD_PARTY_PROJECT_INCLUDES} ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/secp256k1/include)
-    set(THIRD_PARTY_PROJECT_SOURCES ${THIRD_PARTY_PROJECT_SOURCES} ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/secp256k1/src/secp256k1.c)
-endif ()
