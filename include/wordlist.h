@@ -6,7 +6,7 @@
 #define WORDLIST_H
 
 // the words get allocated on the read-only section of memory
-constexpr std::string_view english_word_list[2048] = {
+constexpr const char* english_word_list[] = {
         "abandon",  "ability",  "able",     "about",    "above",    "absent",   "absorb",   "abstract", "absurd",   "abuse",    "access",   "accident", "account",  "accuse",
         "achieve",  "acid",     "acoustic", "acquire",  "across",   "act",      "action",   "actor",    "actress",  "actual",   "adapt",    "add",      "addict",   "address",
         "adjust",   "admit",    "adult",    "advance",  "advice",   "aerobic",  "affair",   "afford",   "afraid",   "again",    "age",      "agent",    "agree",    "ahead",

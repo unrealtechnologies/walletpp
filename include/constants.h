@@ -8,7 +8,7 @@
 #include "secure_vector.h"
 #include <cstddef>
 #include <cstdint>
-#include <string_view>
+#include <string>
 
 namespace walletpp {
     static constexpr size_t private_key_bytes_length = 32;
@@ -25,7 +25,7 @@ namespace walletpp {
     constexpr static uint16_t sha256_output_byte_size = 32;
     constexpr static uint16_t default_pbkdf2_iterations = 2048;
     constexpr static uint16_t pbkdf2_sha512_output_byte_size = 64;
-    static constexpr std::string_view default_mnemonic_salt_string = "mnemonic";
+    static const std::string default_mnemonic_salt_string = "mnemonic";
     static const secure_vector<uint8_t> master_key_parent_key{0x00, 0x00, 0x00, 0x00};
     typedef secure_vector<uint8_t> bytes_buffer;
     typedef uint8_t byte;
