@@ -11,9 +11,9 @@ include(${CMAKE_CURRENT_LIST_DIR}/cmake/sha3iuf.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/cmake/libbase58.cmake)
 
 option(BUILD_THIRD_PARTY_AS_STATIC_LIBS "Build Static Libraries" OFF)
-option(BUILD_VANITY_PROJECT "Build vanity project" ON)
+option(BUILD_VANITY_PROJECT "Build vanity project" OFF)
 option(BUILD_BENCH_PROJECT "Build bench project" OFF)
-option(BUILD_TESTS "Build tests" ON)
+option(BUILD_TESTS "Build tests" OFF)
 
 add_library(${LIB_NAME} STATIC
         include/walletpp.h
