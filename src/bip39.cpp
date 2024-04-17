@@ -51,7 +51,7 @@ namespace walletpp {
 
         size_t checksum_bits_length = entropy.size() * single_byte_bits_length / entropy_bits_multiple;
         const auto checksum = checksum_from_entropy(entropy);
-        const auto entropy_bits = crypto_algorithms::binary_from_bytes(entropy, std::nullopt);
+        const auto entropy_bits = crypto_algorithms::binary_from_bytes(entropy);
         const auto checksum_bits = crypto_algorithms::binary_from_bytes(checksum, checksum_bits_length);
 
         // combine the initial entropy with the checksum
