@@ -8,7 +8,6 @@
 #include "constants.h"
 #include "secure_vector.h"
 #include <iostream>
-#include <optional>
 #include <string>
 #include <vector>
 
