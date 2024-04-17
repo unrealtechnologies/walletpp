@@ -8,6 +8,7 @@
 #include "bip39.h"
 #include "hd_trie.h"
 #include "secure_vector.h"
+#include <array>
 
 namespace walletpp {
     class bip32 {
