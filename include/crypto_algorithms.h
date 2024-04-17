@@ -7,6 +7,7 @@
 
 #include "constants.h"
 #include "secure_vector.h"
+#include <iostream>
 #include <optional>
 #include <string>
 #include <vector>
@@ -22,7 +23,8 @@ namespace walletpp {
         [[nodiscard]] static std::string to_hex(const secure_vector<uint8_t> &v);
         [[nodiscard]] static secure_vector<uint8_t> from_hex(const std::string &hex_string);
         [[nodiscard]] static secure_vector<uint8_t> fast_pbkdf2(std::string_view password, std::string_view salt, size_t iterations = default_pbkdf2_iterations);
-        [[nodiscard]] static secure_vector<uint8_t> binary_from_bytes(const secure_vector<uint8_t> &bytes, const std::optional<size_t> &num_of_bits);
+        [[nodiscard]] static secure_vector<uint8_t> binary_from_bytes(const secure_vector<uint8_t> &bytes);
+        [[nodiscard]] static secure_vector<uint8_t> binary_from_bytes(const secure_vector<uint8_t> &bytes, const size_t &num_of_bits);
         [[nodiscard]] static secure_vector<uint8_t> hmac512(const secure_vector<uint8_t> &msg, const secure_vector<uint8_t> &key);
         [[nodiscard]] static secure_vector<uint8_t> generate_private_key(const secure_vector<uint8_t> &key, const secure_vector<uint8_t> &tweak);
         [[nodiscard]] static secure_vector<uint8_t> generate_public_key(const secure_vector<uint8_t> &key, bool compressed);
@@ -31,12 +33,8 @@ namespace walletpp {
         [[nodiscard]] static secure_vector<uint8_t> uint32_to_big_endian_bytes(uint32_t value);
         [[nodiscard]] static auto base58_encode_to_string(secure_vector<uint8_t> data) -> std::string;
         [[nodiscard]] static auto base58_decode_to_vector(const std::string &base58_string) -> secure_vector<uint8_t>;
-        static void secure_erase_vector(std::vector<uint8_t> &vec) { std::ranges::fill(vec, 0); }
-        static void secure_erase_string(std::string &str) {
-            std::ranges::fill(str, 0);
-            str.clear();
-            str.shrink_to_fit();
-        }
+        static void secure_erase_vector(std::vector<uint8_t> &vec);
+        static void secure_erase_string(std::string &str);
     };
 }// namespace walletpp
 

@@ -127,10 +127,13 @@ namespace walletpp {
 
         return out;
     }
+    secure_vector<uint8_t> crypto_algorithms::binary_from_bytes(const secure_vector<uint8_t> &bytes) {
+        return binary_from_bytes(bytes, bytes.size() * 8);
+    }
 
-    secure_vector<uint8_t> crypto_algorithms::binary_from_bytes(const secure_vector<uint8_t> &bytes, const std::optional<size_t> &num_of_bits) {
+    secure_vector<uint8_t> crypto_algorithms::binary_from_bytes(const secure_vector<uint8_t> &bytes, const size_t &num_of_bits) {
         secure_vector<uint8_t> bits;
-        const size_t bits_to_process = num_of_bits.value_or(bytes.size() * 8);
+        const size_t bits_to_process = num_of_bits;
 
         for (size_t byte_index = 0; byte_index < bytes.size() && bits.size() < bits_to_process; ++byte_index) {
             for (int bit_index = 7; bit_index >= 0 && bits.size() < bits_to_process; --bit_index) {
@@ -242,5 +245,13 @@ namespace walletpp {
         if (!b58tobin(bin.data(), &binsz, base58_string.c_str(), data.size())) { throw std::runtime_error("Failed to decode from Base58"); }
 
         return {bin.begin(), bin.begin() + static_cast<long>(binsz)};
+    }
+
+    void crypto_algorithms::secure_erase_vector(std::vector<uint8_t> &vec) { std::ranges::fill(vec, 0); }
+
+    void crypto_algorithms::secure_erase_string(std::string &str) {
+        std::ranges::fill(str, 0);
+        str.clear();
+        str.shrink_to_fit();
     }
 }// namespace walletpp
