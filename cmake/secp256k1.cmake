@@ -12,6 +12,16 @@ FetchContent_Declare(
 FetchContent_GetProperties(secp256k1)
 if(NOT secp256k1_POPULATED)
     FetchContent_Populate(secp256k1)
-    add_subdirectory(${secp256k1_SOURCE_DIR} ${secp256k1_BINARY_DIR} EXCLUDE_FROM_ALL)
-endif()
 
+    # Include the source files directly
+    file(GLOB SECP256K1_SOURCES
+            ${secp256k1_SOURCE_DIR}/src/precompute_ecmult.c
+            ${secp256k1_SOURCE_DIR}/src/precompute_ecmult_gen.c
+            ${secp256k1_SOURCE_DIR}/src/precomputed_ecmult.c
+            ${secp256k1_SOURCE_DIR}/src/precomputed_ecmult_gen.c
+            ${secp256k1_SOURCE_DIR}/src/secp256k1.c
+    )
+
+    add_library(secp256k1 STATIC ${SECP256K1_SOURCES})
+    target_include_directories(secp256k1 PUBLIC ${secp256k1_SOURCE_DIR}/include)
+endif()
