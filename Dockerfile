@@ -10,12 +10,13 @@ RUN apk update \
     cmake \
     ccache \
     python3 \
-    openssl-dev
+    openssl-dev \
+    libc++
 
 RUN ln -sf /usr/bin/clang /usr/bin/cc \
   && ln -sf /usr/bin/clang++ /usr/bin/c++ \
-  && update-alternatives --install /usr/bin/cc cc /usr/bin/clang 10\
-  && update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++ 10\
+  && update-alternatives --install /usr/bin/cc cc /usr/bin/clang 10 \
+  && update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++ 10 \
   && update-alternatives --auto cc \
   && update-alternatives --auto c++ \
   && update-alternatives --display cc \
@@ -28,12 +29,13 @@ COPY . /app
 
 WORKDIR /app/build
 
-RUN cmake -DCMAKE_BUILD_TYPE=Release .. \
+# Ensure C++ standard is set
+RUN cmake -DCMAKE_CXX_STANDARD=17 -DCMAKE_BUILD_TYPE=Release .. \
   && cmake --build . --parallel 8
 
 RUN chmod +x /app/build/vanity-address-generator/vanity_address_generator
 
-# Define a volume for the /app/data directory to persis data
+# Define a volume for the /app/data directory to persist data
 VOLUME /app/data
 
 CMD ["./vanity-address-generator/vanity_address_generator"]

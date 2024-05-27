@@ -7,6 +7,7 @@
 
 #include "constants.h"
 #include "crypto_algorithms.h"
+#include <memory>
 
 namespace walletpp {
     struct extended_key {
