@@ -89,7 +89,7 @@ void find_address(unsigned int start, unsigned int step, const std::string &file
         const auto b32 = walletpp::bip32::from_seed(seed);
         const auto key_pair = b32.derive_keypair_with_path(b44.to_path_string())->get_key_pair();
 
-        const auto address = walletpp::ethereum_utils::generate_ethereum_address(key_pair.private_key.key);
+        const auto address = walletpp::ethereum_utils::generate_ethereum_address(key_pair.first.key);
         const auto address_without_prefix = address.substr(2, 42);
 
         constexpr int repeated_string_length = 4;
@@ -105,8 +105,8 @@ void find_address(unsigned int start, unsigned int step, const std::string &file
 
             std::ofstream outfile;
             outfile.open(format_file_name(file, start), std::ios_base::app);
-            outfile << key_pair.private_key.to_base58_string() << std::endl;
-            outfile << walletpp::crypto_algorithms::to_hex(key_pair.private_key.key) << std::endl;
+            outfile << key_pair.second.to_base58_string() << std::endl;
+            outfile << walletpp::crypto_algorithms::to_hex(key_pair.second.key) << std::endl;
             outfile << worr_stream << std::endl;
             outfile << address << std::endl;
             outfile << std::endl;
@@ -125,7 +125,6 @@ int main() {
     std::vector<std::thread> threads;
 
     for (unsigned int i = 0; i < cores; ++i) { threads.emplace_back(find_address, i, cores, log_file_format); }
-
     for (auto &th: threads) { th.join(); }
 
     return 0;
