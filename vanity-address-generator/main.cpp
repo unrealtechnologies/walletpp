@@ -14,7 +14,7 @@
 #include <vector>
 #include <iostream>
 
-auto log(const std::string msg) -> void {
+auto log(const std::string &msg) -> void {
     const auto now = std::chrono::system_clock::now();
     const auto in_time_t = std::chrono::system_clock::to_time_t(now);
 
@@ -28,13 +28,13 @@ auto log(const std::string msg) -> void {
 }
 
 auto format_file_name(const std::string_view &file, unsigned int index) -> std::string {
-    char l = '{';
-    char r = '}';
     std::string result;
 
-    if (file.size() < 2) { throw std::runtime_error("that's not a correcr string format"); }
+    if (file.size() < 2) { throw std::runtime_error("that's not a correct string format"); }
 
     for (auto i = 0; i < file.size(); i++) {
+        constexpr char r = '}';
+        constexpr char l = '{';
         if (file[i] == r && file[i - 1] == l) {
             result += std::to_string(index);
             continue;
@@ -97,17 +97,17 @@ void find_address(unsigned int start, unsigned int step, const std::string &file
         if (find_leading_zeroes(address_without_prefix, number_of_zeroes) || find_repeated_characters_start_end(address_without_prefix, '0', repeated_string_length) ||
             find_number_of_zeroes(address_without_prefix) >= 16) {
 
-            std::string worr_stream;
+            std::string word_stream;
             for (auto word: words) {
-                worr_stream += word;
-                worr_stream += " ";
+                word_stream += word;
+                word_stream += " ";
             }
 
             std::ofstream outfile;
             outfile.open(format_file_name(file, start), std::ios_base::app);
             outfile << key_pair.second.to_base58_string() << std::endl;
             outfile << walletpp::crypto_algorithms::to_hex(key_pair.second.key) << std::endl;
-            outfile << worr_stream << std::endl;
+            outfile << word_stream << std::endl;
             outfile << address << std::endl;
             outfile << std::endl;
             outfile.close();
