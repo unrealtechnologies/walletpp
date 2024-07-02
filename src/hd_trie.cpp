@@ -37,7 +37,7 @@ namespace walletpp {
             std::string_view local_path = path_vector.at(i);
 
             size_t index;
-            if (local_path.find(hardened_key_identifier) == std::string_view::npos) {//not hardered
+            if (local_path.find(hardened_key_identifier) == std::string_view::npos) {//not hardened
                 std::from_chars(local_path.data(), local_path.data() + local_path.size(), index);
             } else {
                 std::from_chars(local_path.data(), local_path.data() + local_path.size() - 1, index);

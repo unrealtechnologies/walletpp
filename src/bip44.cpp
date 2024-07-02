@@ -20,5 +20,4 @@ namespace walletpp {
                std::to_string(this->change_) + "/" + std::to_string(this->address_index_);
     }
     auto bip44::generate(const coins &coin, const int index) -> bip44 { return {coin, 0, 0, index}; }
-
 }// namespace walletpp

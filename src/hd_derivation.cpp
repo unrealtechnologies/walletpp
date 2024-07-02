@@ -11,12 +11,12 @@ namespace walletpp {
         if (parent_key.key.size() != private_key_bytes_length) {
             throw std::runtime_error("The private key should be 256 bits, are you attempting to generate the pair with a public key?");
         }
-        const auto is_hardered = is_hardened_key(index);
+        const auto is_hardened = is_hardened_key(index);
         const auto parent_public_key = crypto_algorithms::generate_public_key(parent_key.key, true);
         const auto index_be_format = crypto_algorithms::uint32_to_big_endian_bytes(index);
 
         secure_vector<uint8_t> output{};
-        if (is_hardered) {
+        if (is_hardened) {
             secure_vector p_key = {zero_byte};
             p_key.reserve(private_key_bytes_length + 1 + fingerprint_byte_length);
             p_key.insert(p_key.end(), parent_key.key.begin(), parent_key.key.end());
