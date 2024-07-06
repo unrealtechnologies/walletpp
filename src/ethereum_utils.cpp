@@ -11,7 +11,7 @@ namespace walletpp {
         auto pub_key = crypto_algorithms::generate_public_key(key, false);
         if (pub_key.size() == public_key_uncompressed_bytes_length && pub_key[0] == public_key_uncompressed_form_id) { pub_key.erase(pub_key.begin()); }
         auto hashed_public_key = crypto_algorithms::keccak256(pub_key);
-        const secure_vector<uint8_t> last_20_bytes = {hashed_public_key.begin() + 12, hashed_public_key.end()};
+        const secure_vector<uint8_t> last_20_bytes(hashed_public_key.begin() + 12, hashed_public_key.end());
 
         std::string address = crypto_algorithms::to_hex(last_20_bytes);
 
