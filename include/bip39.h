@@ -28,7 +28,7 @@ namespace walletpp {
 
         [[nodiscard]] static std::vector<std::string_view> mnemonic_from_entropy(const secure_vector<uint8_t> &entropy);
 
-        [[nodiscard]] static secure_vector<uint8_t> seed_from_mnemonic(const std::vector<std::string_view> &words_vector, std::string_view salt = default_mnemonic_salt_string,
+        [[nodiscard]] static secure_vector<uint8_t> seed_from_mnemonic(const std::vector<std::string_view> &words_vector, std::string_view passphrase = default_mnemonic_salt_string,
                                                                        size_t number_of_pbkdf2_iterations = default_pbkdf2_iterations);
     };
 }// namespace walletpp

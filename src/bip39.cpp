@@ -72,7 +72,11 @@ namespace walletpp {
         return words;
     }
 
-    secure_vector<uint8_t> bip39::seed_from_mnemonic(const std::vector<std::string_view> &words_vector, const std::string_view salt, const size_t number_of_pbkdf2_iterations) {
+    secure_vector<uint8_t> bip39::seed_from_mnemonic(const std::vector<std::string_view> &words_vector, const std::string_view passphrase, const size_t number_of_pbkdf2_iterations) {
+        std::string passphrase_salt = default_mnemonic_salt_string;
+        if (passphrase != default_mnemonic_salt_string) {
+            passphrase_salt += passphrase;
+        }
         std::string result;
         for (auto it = words_vector.begin(); it != words_vector.end(); ++it) {
             std::string word_as_string(it->begin(), it->end());
@@ -83,7 +87,7 @@ namespace walletpp {
             crypto_algorithms::secure_erase_string(word_as_string);
         }
 
-        const auto seed = crypto_algorithms::fast_pbkdf2(result, salt, number_of_pbkdf2_iterations);
+        const auto seed = crypto_algorithms::fast_pbkdf2(result, passphrase_salt, number_of_pbkdf2_iterations);
         crypto_algorithms::secure_erase_string(result);
 
         return seed;
