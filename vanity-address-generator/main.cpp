@@ -9,7 +9,6 @@
 #include "encrypt_file.h"
 #include "entropy.h"
 #include "ethereum_utils.h"
-#include "save_file.h"
 #include "wallet_information.h"
 
 #include <format>
