@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.27)
 project(vanity_address_generator)
 
 add_executable(vanity_address_generator main.cpp
-        save_file.h
         encrypt_file.h
         decrypt_file.h
         encryption_vars.h
