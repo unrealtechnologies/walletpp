@@ -11,7 +11,7 @@ include(${CMAKE_CURRENT_LIST_DIR}/cmake/sha3iuf.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/cmake/libbase58.cmake)
 
 option(BUILD_THIRD_PARTY_AS_STATIC_LIBS "Build Static Libraries" OFF)
-option(BUILD_VANITY_PROJECT "Build vanity project" OFF)
+option(BUILD_VANITY_PROJECT "Build vanity project" ON)
 option(BUILD_BENCH_PROJECT "Build bench project" OFF)
 option(BUILD_TESTS "Build tests" OFF)
 
@@ -80,7 +80,7 @@ endif ()
 if (BUILD_VANITY_PROJECT)
     add_subdirectory(vanity-address-generator)
     add_dependencies(vanity_address_generator ${LIB_NAME})
-    target_link_libraries(vanity_address_generator PUBLIC ${LIB_NAME})
+    target_link_libraries(vanity_address_generator PUBLIC ${LIB_NAME} PRIVATE OpenSSL::SSL OpenSSL::Crypto)
 endif ()
 
 if (BUILD_BENCH_PROJECT)
