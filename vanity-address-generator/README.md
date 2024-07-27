@@ -19,6 +19,8 @@ To generate the corresponding private key run the following command
 openssl rsa -pubout -in private_key.pem -out public_key.pem
 ```
 
+
+Run application. Note: public_key is a required parameter
 ```sh 
 ./vanity-address-generator --public_key /path/to/public_key.pem
 ```
