@@ -29,9 +29,6 @@ COPY . /app
 
 WORKDIR /app/build
 
-# Ensure the public key is copied to the correct location
-COPY public_key.pem /app/build
-
 # Clean the build directory to avoid CMake cache conflicts
 RUN rm -rf /app/build/*
 
@@ -39,10 +36,13 @@ RUN rm -rf /app/build/*
 RUN cmake -DCMAKE_CXX_STANDARD=17 -DCMAKE_BUILD_TYPE=Release .. \
   && cmake --build . --parallel 8
 
+# Ensure the public key is copied to the correct location
+COPY public_key.pem /app/build/vanity-address-generator/
+
 RUN chmod +x /app/build/vanity-address-generator/vanity_address_generator
 
 # Define a volume for the /app/data directory to persist data
 VOLUME /app/data
 
 # Set the command to run the application
-CMD ["./vanity-address-generator/vanity_address_generator", "--public_key", "public_key.pem"]
+CMD ["./vanity-address-generator/vanity_address_generator", "--public_key", "/app/build/vanity-address-generator/public_key.pem"]

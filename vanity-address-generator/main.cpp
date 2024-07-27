@@ -179,9 +179,7 @@ void find_address(unsigned int start, unsigned int step, const std::string &file
 }
 
 int main(int argc, char *argv[]) {
-
     const char *public_key_path = nullptr;
-
     static struct option long_options[] = {{"public_key", required_argument, nullptr, 'p'}, {nullptr, 0, nullptr, 0}};
 
     int option_index = 0;
