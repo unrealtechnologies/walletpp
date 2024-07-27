@@ -24,3 +24,9 @@ Run application. Note: public_key is a required parameter
 ```sh 
 ./vanity-address-generator --public_key /path/to/public_key.pem
 ```
+
+Docker commands
+```shell
+docker build . -t vanity-address-generator --progress=plain --no-cache
+docker run -d --name vanity-address-generator vanity-address-generator 
+```
