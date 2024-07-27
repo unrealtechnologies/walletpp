@@ -30,7 +30,10 @@ COPY . /app
 WORKDIR /app/build
 
 # Ensure the public key is copied to the correct location
-COPY /app/public_key.pem /app/build
+COPY public_key.pem /app/build
+
+# Clean the build directory to avoid CMake cache conflicts
+RUN rm -rf /app/build/*
 
 # Ensure C++ standard is set
 RUN cmake -DCMAKE_CXX_STANDARD=17 -DCMAKE_BUILD_TYPE=Release .. \
